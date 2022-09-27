@@ -270,6 +270,7 @@ MonoBehaviour:
   character: {fileID: 5067767103086621574}
   mainRot: 0
   subRot: 0
+  prefab: {fileID: 7091400095371788542, guid: adbc3566ba8e7a743a7d1e48f1be6df2, type: 3}
 --- !u!114 &4849814400517101248
 MonoBehaviour:
   m_ObjectHideFlags: 0
