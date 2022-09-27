@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct Timer
 {
-    private float count;
-    private float time;
+    [SerializeField] private float count;
+    [SerializeField] private float time;
 
     public Timer(float time, float count = 0.0f)
     {

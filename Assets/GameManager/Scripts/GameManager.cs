@@ -34,16 +34,16 @@ public class GameManager : MonoBehaviour
 	public static string GetTimeText() => instance.timeManager.GetText();
 
 	//時止めを発動する
-	public static void OnSpecial() => instance.playerManager.stopFlag.SetFlag(true);
+	public static void OnTimeStop() => instance.playerManager.OnTimeStop();
 
 	//時止めを発動できるか
-	public static bool CanSpecial() => instance.playerManager.CanSpecial();
+	public static bool CanTimeStop() => instance.playerManager.CanTimeStop();
 
 	//時止めゲージを増加させる
 	public static void AddSpecialGauge(int value) => instance.playerManager.gauge.AddValue(value);
 
 	//敵キャラを停止する用
-	public static float TimeRate => instance.playerManager.stopFlag.GetRate();
+	public static float TimeRate => 1.0f - instance.playerManager.timeStop.range;
 
 	//決定ボタンを押した
 	public static bool GetSubmitButtonDown() => Input.GetButtonDown("Submit");
@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
 			return _instance;
 		}
 	}
+
 
 	//シーン管理
 	public SceneManager sceneManager;
@@ -114,6 +115,15 @@ public class GameManager : MonoBehaviour
 	{
 		playerManager.DoUpdate(deltaTime);
 		timeManager.DoUpdate(deltaTime);
+
+		if( Input.GetKey(KeyCode.U))
+		{
+			AddSpecialGauge(1);
+		}
+		if( Input.GetKeyDown(KeyCode.Y))
+		{
+			OnTimeStop();
+		}
 	}
 
 }
@@ -161,15 +171,21 @@ public class PlayerManager
 	public bool deathFlag;
 
 	//時止めフラグ
-	public FlagTimer stopFlag;
+	public bool stopFlag;
 
 	//時止めが使えるか判定
-	public bool CanSpecial()
+	public bool CanTimeStop()
 	{
 		if (deathFlag) return false;    //死亡後は使えない
-		if (stopFlag.GetFlag() ) return false;      //時止め中は使えない
+		if (stopFlag ) return false;      //時止め中は使えない
 		if (gauge.GetRate() < 1.0f) return false;	//ゲージがたまってないと使えない
 		return true;
+	}
+
+	public void OnTimeStop()
+	{
+		stopFlag = true;
+		timeStop.SetFlag(true);
 	}
 
 	//プレイヤーがダメージを受けたとき
@@ -179,27 +195,43 @@ public class PlayerManager
 		if (hpValue < 0) hpValue = 0;
 		if( hpValue <= 0 )
 		{
-			deathFlag = true;
+			//deathFlag = true;
 		}
 	}
 
 	//更新処理
 	public void DoUpdate( float deltaTime )
 	{
-		stopFlag.DoUpdate(deltaTime);
+		timeStop.DoUpdate(deltaTime);
+
+		if( stopFlag )
+		{
+			gauge.AddValue(-1);
+			if( gauge.GetRate() <= 0.0f )
+			{
+				stopFlag = false;
+				timeStop.SetFlag(false);
+			}
+		}
 	}
 
 	//時止めゲージ
 	public GaugeManager gauge;
 
+	//時止め演出用
+	public TimeStop timeStop;
+
 	//初期化処理
 	public void Reset()
 	{
+		//時止め演出リセット
+		timeStop.Reset();
+
 		//HPをリセット
 		hpValue = 1;
 
 		//時止めフラグをOFF
-		stopFlag = new FlagTimer(10);
+		stopFlag = false;
 
 		//死亡したフラグをOFF
 		deathFlag = false;
