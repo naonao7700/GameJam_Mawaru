@@ -10,6 +10,7 @@ public class TitleScene : MonoBehaviour, IScene
     public void OnEnter()
     {
         gameObject.SetActive(true);
+		GameManager.OnDeleteAllEnemy();
     }
 
     //タイトルシーンの更新

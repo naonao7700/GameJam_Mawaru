@@ -10,6 +10,10 @@ public class GameScene : MonoBehaviour, IScene
     [SerializeField] private GameObject ui;
     [SerializeField] private gaugeScript gauge; //ゲージ
 
+	[SerializeField] private Text score;	//スコア
+	[SerializeField] private Text time;	//経過時間
+
+
     //インスタンス生成用のPrefab参照設定
     [SerializeField] private GameObject playerPrefab;    //プレイヤーのPrefab参照
     [SerializeField] private GameObject enemyPrefab;    //敵キャラのPrefab参照
@@ -22,13 +26,11 @@ public class GameScene : MonoBehaviour, IScene
     //ゲームシーンの初期化
     public void OnEnter()
     {
-        //UIを表示する
-        ui.SetActive(true);
+		//ゲーム開始時の初期化処理
+		GameManager.OnGameStart();
 
-        foreach( var enemy in GameObject.FindGameObjectsWithTag("Enemy") )
-        {
-            GameObject.Destroy(enemy.gameObject);
-        }
+		//UIを表示する
+		ui.SetActive(true);
 
         //プレイヤーが既に生成してあるなら消す
         if( playerObject != null )
@@ -46,18 +48,26 @@ public class GameScene : MonoBehaviour, IScene
 
         //敵キャラの生成
         enemyObject = GameObject.Instantiate(enemyPrefab);
-
     }
 
     //ゲームシーンの更新
     public void DoUpdate()
     {
+		//データの更新処理
+		GameManager.DoUpdate(Time.deltaTime);
+
         //ゲームオーバーになったとき
         if( GameManager.IsGameOver() )
         {
             //リザルトシーンへ遷移する
             GameManager.OnChangeScene(SceneID.Result);
         }
+
+		//経過時間を更新
+		time.text = "経過時間：" + GameManager.GetTimeText();
+
+		//スコアを更新
+		score.text = "Score:" + GameManager.GetScore().ToString("D4");
 
         //ゲージの更新
         gauge.Change(GameManager.GetGaugeRate());
@@ -66,7 +76,5 @@ public class GameScene : MonoBehaviour, IScene
     //ゲームシーンの終了処理
     public void OnExit()
     {
-        //UIを非表示にする
-        ui.SetActive(false);
     }
 }

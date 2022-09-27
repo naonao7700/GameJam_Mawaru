@@ -4,38 +4,46 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+	public static void DoUpdate(float deltaTime) => instance.DoUpdateCore(deltaTime);
+
 	//シーンを変更する処理
-	public static void OnChangeScene(SceneID sceneID) => instance.OnChangeSceneCore(sceneID);
+	public static void OnChangeScene(SceneID sceneID) => instance.sceneManager.OnChangeScene(sceneID);
+
+	//敵キャラを全て消す
+	public static void OnDeleteAllEnemy() => instance.OnDeleteAllEnemyCore();
 
 	//ゲームオーバーになったか判定
-	public static bool IsGameOver() => Input.GetKeyDown(KeyCode.R); //仮
+	public static bool IsGameOver() => instance.playerManager.deathFlag;
 
 	//プレイヤーがダメージを受けた時
-	public static void OnPlayerDamage(int value) => instance.OnPlayerDamageCore(value);
+	public static void OnPlayerDamage(int value) => instance.playerManager.OnDamage(value);
 
 	//ゲージの割合を取得する
-	public static float GetGaugeRate() => instance.GetGaugeRateCore();
+	public static float GetGaugeRate() => instance.playerManager.gauge.GetRate();
 
 	//スコアを取得する
-	public static int GetScore() => instance.score;
+	public static int GetScore() => instance.scoreManager.score;
 
 	//スコアを加算する
-	public static void AddScore(int value) => instance.AddScoreCore(value);
+	public static void AddScore(int value) => instance.scoreManager.AddScore(value);
 
 	//スコアを設定する
-	public static void SetScore(int value) => instance.SetScoreCore(value);
+	public static void SetScore(int value) => instance.scoreManager.SetScore(value);
+
+	//経過時間を取得する
+	public static string GetTimeText() => instance.timeManager.GetText();
 
 	//時止めを発動する
-	public static void OnSpecial() => instance.OnSpecialCore();
+	public static void OnSpecial() => instance.playerManager.stopFlag.SetFlag(true);
 
 	//時止めを発動できるか
-	public static bool CanSpecial() => instance.CanSpecialCore();
+	public static bool CanSpecial() => instance.playerManager.CanSpecial();
 
 	//時止めゲージを増加させる
-	public static void AddSpecialGauge(int value) => instance.AddSpecialGaugeCore(value);
+	public static void AddSpecialGauge(int value) => instance.playerManager.gauge.AddValue(value);
 
 	//敵キャラを停止する用
-	public static float TimeRate => instance.stopFlag.GetRate();
+	public static float TimeRate => instance.playerManager.stopFlag.GetRate();
 
 	//決定ボタンを押した
 	public static bool GetSubmitButtonDown() => Input.GetButtonDown("Submit");
@@ -45,6 +53,9 @@ public class GameManager : MonoBehaviour
 
 	//下ボタンを押した
 	public static bool GetDownButtonDown() => Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f;
+
+	//ゲーム開始時の初期化処理
+	public static void OnGameStart() => instance.OnGameStartCore();
 
 	//シングルトン
 	private static GameManager _instance;
@@ -60,112 +71,203 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	//シーンの参照設定(Inspecterで設定)
-	[SerializeField] private TitleScene titleScene;
-	[SerializeField] private GameScene gameScene;
-	[SerializeField] private ResultScene resultScene;
+	//シーン管理
+	public SceneManager sceneManager;
 
-    private IScene currentScene;    //現在のシーン
-    public SceneID sceneID;    //現在のシーンID
+	//プレイヤー管理
+	public PlayerManager playerManager;
 
-    //初期化処理
-    private void Start()
-    {
-        titleScene.OnExit();
-        gameScene.OnExit();
-        resultScene.OnExit();
+	//スコア管理
+	public ScoreManager scoreManager;
 
-        //タイトルシーンを最初に実行する
-        OnChangeScene(SceneID.Title);
-    }
+	//経過時間
+	public TimeManager timeManager;
 
-    //更新処理
-    private void Update()
-    {
-        //現在のシーンを更新する
-        currentScene.DoUpdate();
-    }
-
-
-	//シーンの切り替え処理
-	private void OnChangeSceneCore( SceneID sceneID )
+	//ゲーム開始時の初期化処理
+	private void OnGameStartCore()
 	{
-		this.sceneID = sceneID;
-		if (currentScene != null)
+		//スコアをリセット
+		scoreManager.SetScore(0);
+
+		//経過時間をリセット
+		timeManager.Reset();
+
+		//プレイヤーのHPをリセット
+		playerManager.Reset();
+
+		//敵キャラを全て消す
+		OnDeleteAllEnemyCore();
+	}
+
+	//敵キャラを全て消す
+	private void OnDeleteAllEnemyCore()
+	{
+		//生存している敵キャラを全て消す
+		foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
 		{
-			//シーンの終了処理
-			currentScene.OnExit();
+			GameObject.Destroy(enemy.gameObject);
 		}
-
-		//シーンを設定する
-		switch (sceneID)
-		{
-			case SceneID.Title: currentScene = titleScene; break;
-			case SceneID.Game: currentScene = gameScene; break;
-			case SceneID.Result: currentScene = resultScene; break;
-		}
-
-		//シーンの初期化処理
-		currentScene.OnEnter();
 	}
 
-
-    //ゲームのスコア
-    public int score;
-    public const int SCORE_MAX = 9999;
-
-    //時止め中フラグ
-    public FlagTimer stopFlag;
-
-    //時止めゲージ
-    public int specialValue;
-    public const int SPECIAL_MAX = 120;
-    public float GetGaugeRateCore()
-    {
-        return (float)specialValue / SPECIAL_MAX;
-    }
-
-
-	//プレイヤーがダメージを受けた時
-	public void OnPlayerDamageCore(int value)
+	//更新処理
+	private void DoUpdateCore( float deltaTime )
 	{
-		OnChangeScene(SceneID.Result);
-	}
-
-	//スコアを加算する
-	private void AddScoreCore( int value )
-    {
-        score += value;
-        if (score > SCORE_MAX) score = SCORE_MAX;
-    }
-
-    //スコアを設定する
-    public void SetScoreCore( int value )
-    {
-        score = value;
-        if (score < 0) score = 0;
-        if (score > SCORE_MAX) score = SCORE_MAX;
-    }
-
-	//時止めを発動する
-	private void OnSpecialCore()
-	{
-		stopFlag.SetFlag(true);
-	}
-
-	//時止めを発動できるか
-	public bool CanSpecialCore()
-    {
-        if (stopFlag.GetFlag()) return false;//時止め中は発動できない
-        if (specialValue < SPECIAL_MAX) return false;　//ゲージが溜まってないときは発動不可
-        return true;
-    }
-
-	//時止めゲージを増加させる
-	private void AddSpecialGaugeCore( int value )
-	{
-		specialValue += value;
-		if (specialValue > SPECIAL_MAX) specialValue = SPECIAL_MAX;
+		playerManager.DoUpdate(deltaTime);
+		timeManager.DoUpdate(deltaTime);
 	}
 
 }
+
+//経過時間管理
+[System.Serializable]
+public class TimeManager
+{
+	public float seconds;	//秒
+	public int minute;		//分
+
+	//初期化
+	public void Reset()
+	{
+		seconds = 0.0f;
+		minute = 0;
+	}
+
+	//更新処理
+	public void DoUpdate( float deltaTime )
+	{
+		seconds += deltaTime;
+		if( seconds >= 60.0f )
+		{
+			minute++;
+			seconds = seconds - 60.0f;
+		}
+	}
+
+	//表示文を取得する
+	public string GetText()
+	{
+		return $"{minute.ToString("00")}:{((int)seconds).ToString("00")}";
+	}
+}
+
+//プレイヤー管理
+[System.Serializable]
+public class PlayerManager
+{
+	//現在のHP
+	public int hpValue;
+
+	//死亡したフラグ
+	public bool deathFlag;
+
+	//時止めフラグ
+	public FlagTimer stopFlag;
+
+	//時止めが使えるか判定
+	public bool CanSpecial()
+	{
+		if (deathFlag) return false;    //死亡後は使えない
+		if (stopFlag.GetFlag() ) return false;      //時止め中は使えない
+		if (gauge.GetRate() < 1.0f) return false;	//ゲージがたまってないと使えない
+		return true;
+	}
+
+	//プレイヤーがダメージを受けたとき
+	public void OnDamage( int value )
+	{
+		hpValue -= value;
+		if (hpValue < 0) hpValue = 0;
+		if( hpValue <= 0 )
+		{
+			deathFlag = true;
+		}
+	}
+
+	//更新処理
+	public void DoUpdate( float deltaTime )
+	{
+		stopFlag.DoUpdate(deltaTime);
+	}
+
+	//時止めゲージ
+	public GaugeManager gauge;
+
+	//初期化処理
+	public void Reset()
+	{
+		//HPをリセット
+		hpValue = 1;
+
+		//時止めフラグをOFF
+		stopFlag = new FlagTimer(10);
+
+		//死亡したフラグをOFF
+		deathFlag = false;
+
+		//ゲージの初期化
+		gauge.SetValue(0);
+	}
+
+}
+
+//ゲージ管理
+[System.Serializable]
+public class GaugeManager
+{
+	//現在の値
+	public int value;
+
+	//ゲージの最大値
+	public const int GAUGE_MAX = 100;
+
+	//ゲージを加算する
+	public void AddValue( int value )
+	{
+		SetValue(this.value + value);
+	}
+
+	//ゲージの数値を設定する
+	public void SetValue( int value )
+	{
+		if (value < 0) value = 0;
+		else if (value > GAUGE_MAX) value = GAUGE_MAX;
+		this.value = value;
+	}
+
+	//ゲージの割合を取得する
+	public float GetRate()
+	{
+		return (float)value / GAUGE_MAX;
+	}
+
+}
+
+//スコア管理
+[System.Serializable]
+public class ScoreManager
+{
+	//現在のスコア
+	public int score;
+
+	//ハイスコア記録
+	public int highScore;
+
+	//スコアの最大値
+	public const int SCORE_MAX = 9999;
+
+	//スコアを加算する
+	public void AddScore( int value )
+	{
+		SetScore(score + value);
+	}
+
+	//スコアの数値を設定する
+	public void SetScore( int value )
+	{
+		score = value;
+		if (score < 0) score = 0;
+		if (score > SCORE_MAX) score = SCORE_MAX;
+	}
+}
+
+
