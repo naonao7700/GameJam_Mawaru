@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2803269703357467917}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -2.78, y: -0.23, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.0201, y: 1.0201, z: 1.0201}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -112,9 +112,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.000000007303775}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.08995822
 --- !u!50 &289507734822472118
 Rigidbody2D:
   serializedVersion: 4
