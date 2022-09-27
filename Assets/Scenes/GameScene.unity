@@ -2076,7 +2076,7 @@ MonoBehaviour:
   gauge: {fileID: 529813933}
   score: {fileID: 1200716658}
   time: {fileID: 683464873}
-  playerPrefab: {fileID: 359724368893529778, guid: 12eeaf33f04bd2b45a28bd4fdc466917, type: 3}
+  playerPrefab: {fileID: 3289480701534056061, guid: 5f3db1f9f08328a48972c47288ee532e, type: 3}
   enemyPrefab: {fileID: 3478432964096283517, guid: c8153989e3a96e74396a16f9c372f620, type: 3}
   playerObject: {fileID: 0}
   enemyObject: {fileID: 0}
