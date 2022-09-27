@@ -6,9 +6,6 @@ using UnityEngine.UI;
 //ゲームシーン
 public class GameScene : MonoBehaviour, IScene
 {
-    //ゲームマネージャ
-    [SerializeField] private GameManager game;
-
     //UI
     [SerializeField] private GameObject ui;
     [SerializeField] private gaugeScript gauge; //ゲージ
@@ -56,14 +53,14 @@ public class GameScene : MonoBehaviour, IScene
     public void DoUpdate()
     {
         //ゲームオーバーになったとき
-        if( game.IsGameOver() )
+        if( GameManager.IsGameOver() )
         {
             //リザルトシーンへ遷移する
-            game.OnChangeScene(SceneID.Result);
+            GameManager.OnChangeScene(SceneID.Result);
         }
 
         //ゲージの更新
-        gauge.Change(game.GetGaugeRate());
+        gauge.Change(GameManager.GetGaugeRate());
     }
 
     //ゲームシーンの終了処理

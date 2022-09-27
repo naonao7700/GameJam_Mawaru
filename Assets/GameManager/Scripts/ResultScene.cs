@@ -6,9 +6,6 @@ using UnityEngine.UI;
 //リザルトシーン
 public class ResultScene : MonoBehaviour, IScene
 {
-    //ゲームマネージャ
-    [SerializeField] private GameManager game;
-
     //カーソルの現在位置
     [SerializeField] private int cursorPos;
 
@@ -43,13 +40,13 @@ public class ResultScene : MonoBehaviour, IScene
     {
         //カーソルの移動処理
         int cursor = cursorPos;
-        if( game.GetUpButtonDown() )
+        if( GameManager.GetUpButtonDown() )
         {
             //カーソルを上へ動かす
             cursor--;
             if (cursor < 0) cursor = cursorImage.Length - 1;    //ループ対応
         }
-        else if( game.GetDownButtonDown() )
+        else if( GameManager.GetDownButtonDown() )
         {
             //カーソルを下へ動かす
             cursor++;
@@ -63,18 +60,18 @@ public class ResultScene : MonoBehaviour, IScene
         }
 
         //ボタンを押したとき
-        if ( game.GetSubmitButtonDown() )
+        if ( GameManager.GetSubmitButtonDown() )
         {
             //カーソル位置によって分岐する
             if( cursorPos == 0 )
             {
                 //ゲームシーンへ遷移する
-                game.OnChangeScene(SceneID.Game);
+                GameManager.OnChangeScene(SceneID.Game);
             }
             else
             {
                 //タイトルシーンへ遷移する
-                game.OnChangeScene(SceneID.Title);
+                GameManager.OnChangeScene(SceneID.Title);
             }
         }
     }

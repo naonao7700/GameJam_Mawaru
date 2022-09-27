@@ -6,9 +6,6 @@ using UnityEngine.UI;
 //タイトルシーン
 public class TitleScene : MonoBehaviour, IScene
 {
-    //ゲームマネージャ
-    [SerializeField] private GameManager game;
-
     //タイトルシーンの初期化
     public void OnEnter()
     {
@@ -19,10 +16,10 @@ public class TitleScene : MonoBehaviour, IScene
     public void DoUpdate()
     {
         //ボタンを押したとき
-        if( game.GetSubmitButtonDown() )
+        if( GameManager.GetSubmitButtonDown() )
         {
             //ゲームシーンに遷移する
-            game.OnChangeScene(SceneID.Game);
+            GameManager.OnChangeScene(SceneID.Game);
         }
     }
 

@@ -4,13 +4,9 @@ using UnityEngine;
 
 public class Hit : MonoBehaviour
 {
-    //ゲームマネージャ
-    [SerializeField] private GameManager game;
-
     // Start is called before the first frame update
     void Start()
     {
-        game = GameObject.FindObjectOfType<GameManager>();
     }
 
     // Update is called once per frame
@@ -26,7 +22,7 @@ public class Hit : MonoBehaviour
             Destroy(collision.gameObject, 0.01f);
 
             //プレイヤーにダメージを与える
-            game.OnPlayerDamage(100);
+            GameManager.OnPlayerDamage(100);
         }
     }
 }

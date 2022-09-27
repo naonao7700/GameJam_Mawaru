@@ -4,10 +4,66 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    //シーンの参照設定(Inspecterで設定)
-    [SerializeField] private TitleScene titleScene;
-    [SerializeField] private GameScene gameScene;
-    [SerializeField] private ResultScene resultScene;
+	//シーンを変更する処理
+	public static void OnChangeScene(SceneID sceneID) => instance.OnChangeSceneCore(sceneID);
+
+	//ゲームオーバーになったか判定
+	public static bool IsGameOver() => Input.GetKeyDown(KeyCode.R); //仮
+
+	//プレイヤーがダメージを受けた時
+	public static void OnPlayerDamage(int value) => instance.OnPlayerDamageCore(value);
+
+	//ゲージの割合を取得する
+	public static float GetGaugeRate() => instance.GetGaugeRateCore();
+
+	//スコアを取得する
+	public static int GetScore() => instance.score;
+
+	//スコアを加算する
+	public static void AddScore(int value) => instance.AddScoreCore(value);
+
+	//スコアを設定する
+	public static void SetScore(int value) => instance.SetScoreCore(value);
+
+	//時止めを発動する
+	public static void OnSpecial() => instance.OnSpecialCore();
+
+	//時止めを発動できるか
+	public static bool CanSpecial() => instance.CanSpecialCore();
+
+	//時止めゲージを増加させる
+	public static void AddSpecialGauge(int value) => instance.AddSpecialGaugeCore(value);
+
+	//敵キャラを停止する用
+	public static float TimeRate => instance.stopFlag.GetRate();
+
+	//決定ボタンを押した
+	public static bool GetSubmitButtonDown() => Input.GetButtonDown("Submit");
+
+	//上ボタンを押した
+	public static bool GetUpButtonDown() => Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0.0f;
+
+	//下ボタンを押した
+	public static bool GetDownButtonDown() => Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f;
+
+	//シングルトン
+	private static GameManager _instance;
+	private static GameManager instance
+	{
+		get
+		{
+			if (_instance == null)
+			{
+				_instance = GameObject.FindObjectOfType<GameManager>();
+			}
+			return _instance;
+		}
+	}
+
+	//シーンの参照設定(Inspecterで設定)
+	[SerializeField] private TitleScene titleScene;
+	[SerializeField] private GameScene gameScene;
+	[SerializeField] private ResultScene resultScene;
 
     private IScene currentScene;    //現在のシーン
     public SceneID sceneID;    //現在のシーンID
@@ -30,34 +86,29 @@ public class GameManager : MonoBehaviour
         currentScene.DoUpdate();
     }
 
-    //ゲームオーバーになったか判定
-    public bool IsGameOver()
-    {
-        return Input.GetKeyDown(KeyCode.R);
-        //return GetSubmitButtonDown();
-    }
 
-    //シーンを変更する処理
-    public void OnChangeScene(SceneID sceneID)
-    {
-        this.sceneID = sceneID;
-        if ( currentScene != null )
-        {
-            //シーンの終了処理
-            currentScene.OnExit();
-        }
+	//シーンの切り替え処理
+	private void OnChangeSceneCore( SceneID sceneID )
+	{
+		this.sceneID = sceneID;
+		if (currentScene != null)
+		{
+			//シーンの終了処理
+			currentScene.OnExit();
+		}
 
-        //シーンを設定する
-        switch (sceneID)
-        {
-            case SceneID.Title:　currentScene = titleScene; break;
-            case SceneID.Game: currentScene = gameScene; break;
-            case SceneID.Result: currentScene = resultScene; break;
-        }
+		//シーンを設定する
+		switch (sceneID)
+		{
+			case SceneID.Title: currentScene = titleScene; break;
+			case SceneID.Game: currentScene = gameScene; break;
+			case SceneID.Result: currentScene = resultScene; break;
+		}
 
-        //シーンの初期化処理
-        currentScene.OnEnter();
-    }
+		//シーンの初期化処理
+		currentScene.OnEnter();
+	}
+
 
     //ゲームのスコア
     public int score;
@@ -69,78 +120,52 @@ public class GameManager : MonoBehaviour
     //時止めゲージ
     public int specialValue;
     public const int SPECIAL_MAX = 120;
-    public float GetGaugeRate()
+    public float GetGaugeRateCore()
     {
         return (float)specialValue / SPECIAL_MAX;
     }
 
-    //プレイヤーがダメージを受けた時
-    public void OnPlayerDamage( int value )
-    {
-        OnChangeScene(SceneID.Result);
-    }
 
-    //スコアを取得する
-    public int GetScore()
-    {
-        return score;
-    }
+	//プレイヤーがダメージを受けた時
+	public void OnPlayerDamageCore(int value)
+	{
+		OnChangeScene(SceneID.Result);
+	}
 
-    //スコアを加算する
-    public void AddScore( int value )
+	//スコアを加算する
+	private void AddScoreCore( int value )
     {
         score += value;
         if (score > SCORE_MAX) score = SCORE_MAX;
     }
 
     //スコアを設定する
-    public void SetScore( int value )
+    public void SetScoreCore( int value )
     {
         score = value;
         if (score < 0) score = 0;
         if (score > SCORE_MAX) score = SCORE_MAX;
     }
 
+	//時止めを発動する
+	private void OnSpecialCore()
+	{
+		stopFlag.SetFlag(true);
+	}
 
-    //時止めを発動する
-    public void OnSpecial()
-    {
-        stopFlag.SetFlag(true);
-    }
-
-    //時止めを発動できるか
-    public bool CanSpecial()
+	//時止めを発動できるか
+	public bool CanSpecialCore()
     {
         if (stopFlag.GetFlag()) return false;//時止め中は発動できない
         if (specialValue < SPECIAL_MAX) return false;　//ゲージが溜まってないときは発動不可
         return true;
     }
 
-    //時止めゲージを加算する
-    public void AddSpecialGauge( int value )
-    {
+	//時止めゲージを増加させる
+	private void AddSpecialGaugeCore( int value )
+	{
+		specialValue += value;
+		if (specialValue > SPECIAL_MAX) specialValue = SPECIAL_MAX;
+	}
 
-    }
-
-    //敵キャラを停止する用
-    public float TimeRate => stopFlag.GetRate();
-    
-
-    //決定ボタンを押した
-    public bool GetSubmitButtonDown()
-    {
-        return Input.GetButtonDown("Submit");
-    }
-
-    //上ボタンを押した
-    public bool GetUpButtonDown()
-    {
-        return Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0.0f;
-    }
-
-    //下ボタンを押した
-    public bool GetDownButtonDown()
-    {
-        return Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f;
-    }
 }
