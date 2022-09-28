@@ -232,6 +232,7 @@ public class TimeManager
 public class PlayerManager
 {
 	[SerializeField] private GameObject deathEffectPrefab;  //死亡時のエフェクト
+	[SerializeField] private CutInManager CutInManager;	//カットイン
 
 	private GameObject effect;
 
@@ -267,7 +268,11 @@ public class PlayerManager
 		GameManager.PlaySE(timeStopSE1, 3.0f );
 		GameManager.PlaySE(timeStopSE2 );
 
+		//ゲージの演出変更
 		GameManager.GaugeObject.Release();
+
+		//カットイン制御
+		CutInManager.OnStart();
 
 		stopFlag = true;
 		timeStop.SetFlag(true);
@@ -291,14 +296,20 @@ public class PlayerManager
 
 	public bool GetDeathFlag()
     {
-		return
-			deathFlag && effect == null;
+		return deathFlag && effect == null;
     }
 
 	//更新処理
 	public void DoUpdate( float deltaTime )
 	{
+		if( Input.GetKeyDown(KeyCode.Y))
+		{
+			gauge.SetValue(70);
+		}
+
 		timeStop.DoUpdate(deltaTime);
+
+		CutInManager.DoUpdate(deltaTime);
 
 		if( stopFlag )
 		{
@@ -309,13 +320,6 @@ public class PlayerManager
 				stopFlag = false;
 				timeStop.SetFlag(false);
             }
-
-			//gauge.AddValue(-1);
-			//if( gauge.GetRate() <= 0.0f )
-			//{
-			//	stopFlag = false;
-			//	timeStop.SetFlag(false);
-			//}
 		}
 	}
 
@@ -328,6 +332,7 @@ public class PlayerManager
 	//初期化処理
 	public void Reset()
 	{
+		CutInManager.Reset();
 		timeStopTimer = new Timer(3.0f);
 
 		//時止め演出リセット
@@ -431,4 +436,80 @@ public class ScoreManager
 	}
 }
 
+//カットインの制御
+[System.Serializable]
+public class CutInManager
+{
+	[SerializeField] private UnityEngine.UI.Image image;
+	[SerializeField] private Vector3 startPos;
+	[SerializeField] private Vector3 endPos;
 
+	[SerializeField] private Vector3 startScale;
+	[SerializeField] private Vector3 endScale;
+
+	[SerializeField] private float[] times;
+
+	public Timer timer;
+	public int step;
+	public bool activeFlag;
+
+	public void Reset()
+	{
+		activeFlag = false;
+		image.gameObject.SetActive(false);
+	}
+
+	//カットイン演出開始
+	public void OnStart()
+	{
+		step = 0;
+		timer.Reset( times[0], 0.0f );
+		image.gameObject.SetActive(true);
+		image.transform.position = startPos;
+		image.transform.localScale = startScale;
+		image.color = Color.white;
+		activeFlag = true;
+	}
+
+	//更新処理
+	public void DoUpdate( float deltaTime )
+	{
+		if (!activeFlag) return;
+		timer.DoUpdate(deltaTime);
+		var t = timer.GetRate();
+		if( timer.IsEnd() )
+		{
+			timer.Reset(times[step], 0.0f );
+			step++;
+			if( step >= times.Length )
+			{
+				image.gameObject.SetActive(false);
+				activeFlag = false;
+			}
+		}
+		switch( step )
+		{
+			case 0:
+				{
+					//スライドイン
+					image.rectTransform.anchoredPosition = Vector3.Lerp(startPos, endPos, t);
+					break;
+				}
+			case 1:
+				{
+					//待機
+					break;
+				}
+			case 2:
+				{
+					//拡大&透明化
+					image.transform.localScale = Vector3.Lerp(startScale, endScale, t);
+					var color = image.color;
+					color.a = Mathf.Lerp(1.0f, 0.0f, t);
+					image.color = color;
+					break;
+				}
+		}
+	}
+
+}
