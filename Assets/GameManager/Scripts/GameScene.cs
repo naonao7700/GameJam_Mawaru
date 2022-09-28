@@ -23,9 +23,15 @@ public class GameScene : MonoBehaviour, IScene
     [SerializeField] private GameObject playerObject;   //プレイヤー
     [SerializeField] private GameObject enemyObject;    //敵キャラスポナー
 
+    [SerializeField] private AudioClip[] bgmList;
+
     //ゲームシーンの初期化
     public void OnEnter()
     {
+        //BGMをランダムで再生する
+        int rand = Random.Range(0, bgmList.Length);
+        GameManager.PlayBGM(bgmList[rand]);
+
 		//ゲーム開始時の初期化処理
 		GameManager.OnGameStart();
 

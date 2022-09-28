@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 2803269703357467917, guid: 17da8800687706446ab87dbddc4b0f16, type: 3}
-  span: 0.1
+  span: 1
 --- !u!114 &3478432964096283518
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -30,7 +30,7 @@ public class enemymove : MonoBehaviour
         //Update()‚ÅˆÚ“®‚·‚éê‡‚Í@Time.deltaTime ‚ğ‚©‚¯‚é
         // Update‚ÌXV‚É‚©‚©‚Á‚½ŠÔ‚ª“ü‚Á‚Ä‚¢‚é
 
-        if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.08f) == true)
+        if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == true)
         {
             //Destroy(gameObject);
             //float speed2 = speed;
@@ -40,7 +40,7 @@ public class enemymove : MonoBehaviour
             //    speed2 = 0;
         }
 
-        if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.08f) == false)
+        if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
         {
             transform.Translate(dir.normalized * speed * Time.deltaTime);
         }

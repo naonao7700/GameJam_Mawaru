@@ -226,6 +226,8 @@ GameObject:
   - component: {fileID: 3139771138852543107}
   - component: {fileID: 4849814400517101248}
   - component: {fileID: 6584514009675937105}
+  - component: {fileID: -6217150126821619539}
+  - component: {fileID: 2891706848135041491}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -299,6 +301,43 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &-6217150126821619539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3289480701534056061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f1307b10965ac46b304ac6aec2687f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 3139771138852543107}
+  mainBulletPrefab: {fileID: 7091400095371788542, guid: adbc3566ba8e7a743a7d1e48f1be6df2, type: 3}
+  subBulletPrefab: {fileID: 7091400095371788542, guid: 9662c8fec1fef5b459e902eef0b999f9, type: 3}
+  mainShotInterval: 0.5
+  subShotInterval: 2
+  subShotWayAngle: 20
+  mainShot: 1
+  subShot: 1
+--- !u!114 &2891706848135041491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3289480701534056061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a65a895aa86d73143a8f9464395fcafc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerObject: {fileID: 3139771138852543107}
+  LongHandSpeed: 30
+  ShortHandSpeed: 10
+  GaugeUpValue: 0.01
+  GaugeNum: 0
 --- !u!1 &3802987336534292823
 GameObject:
   m_ObjectHideFlags: 0

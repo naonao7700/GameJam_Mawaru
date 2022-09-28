@@ -6,6 +6,8 @@ using UnityEngine.UI;
 //タイトルシーン
 public class TitleScene : MonoBehaviour, IScene
 {
+    [SerializeField] private AudioClip startSE;
+
     //タイトルシーンの初期化
     public void OnEnter()
     {
@@ -19,6 +21,9 @@ public class TitleScene : MonoBehaviour, IScene
         //ボタンを押したとき
         if( GameManager.GetSubmitButtonDown() )
         {
+            //SEを再生する
+            GameManager.PlaySE(startSE);
+
             //ゲームシーンに遷移する
             GameManager.OnChangeScene(SceneID.Game);
         }

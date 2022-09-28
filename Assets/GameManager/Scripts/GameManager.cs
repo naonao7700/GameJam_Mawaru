@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 	public static bool CanTimeStop() => instance.playerManager.CanTimeStop();
 
 	//時止めゲージを増加させる
-	public static void AddSpecialGauge(int value) => instance.playerManager.gauge.AddValue(value);
+	public static void AddTimeStopGauge(float value) => instance.playerManager.gauge.AddValue(value);
 
 	//敵キャラを停止する用
 	public static float TimeRate => 1.0f - instance.playerManager.timeStop.range;
@@ -57,6 +57,19 @@ public class GameManager : MonoBehaviour
 	//ゲーム開始時の初期化処理
 	public static void OnGameStart() => instance.OnGameStartCore();
 
+	//時止め中か判定
+	public static bool IsTimeStop() => instance.playerManager.stopFlag;
+
+	//BGMを再生する
+	public static void PlayBGM(AudioClip clip) => instance._PlayBGM(clip);
+
+	//SEを再生する
+	public static void PlaySE(AudioClip clip) => instance._PlaySE(clip);
+
+	//エフェクトを再生する
+	public static void PlayEffect(GameObject prefab, Vector3 position) => instance._PlayEffect(prefab, position, Quaternion.identity);
+	public static void PlayEffect(GameObject prefab, Vector3 position, Quaternion rotation) => instance._PlayEffect(prefab, position, rotation);
+
 	//シングルトン
 	private static GameManager _instance;
 	private static GameManager instance
@@ -70,7 +83,6 @@ public class GameManager : MonoBehaviour
 			return _instance;
 		}
 	}
-
 
 	//シーン管理
 	public SceneManager sceneManager;
@@ -118,13 +130,34 @@ public class GameManager : MonoBehaviour
 
 		if( Input.GetKey(KeyCode.U))
 		{
-			AddSpecialGauge(1);
+			AddTimeStopGauge(1);
 		}
 		if( Input.GetKeyDown(KeyCode.Y))
 		{
 			OnTimeStop();
 		}
 	}
+
+	[SerializeField] private AudioSource sound;
+
+	//BGMを再生する
+	private void _PlayBGM( AudioClip clip )
+    {
+		sound.clip = clip;
+		sound.Play();
+    }
+
+	//SEを再生する
+	private void _PlaySE( AudioClip clip )
+    {
+		sound.PlayOneShot(clip);
+    }
+
+	//エフェクトを生成する
+	private void _PlayEffect( GameObject prefab, Vector3 position, Quaternion rotation )
+    {
+		GameObject.Instantiate(prefab, position, rotation);
+    }
 
 }
 
@@ -173,6 +206,8 @@ public class PlayerManager
 	//時止めフラグ
 	public bool stopFlag;
 
+	public Timer timeStopTimer;
+
 	//時止めが使えるか判定
 	public bool CanTimeStop()
 	{
@@ -186,6 +221,7 @@ public class PlayerManager
 	{
 		stopFlag = true;
 		timeStop.SetFlag(true);
+		timeStopTimer.Reset();
 	}
 
 	//プレイヤーがダメージを受けたとき
@@ -195,7 +231,7 @@ public class PlayerManager
 		if (hpValue < 0) hpValue = 0;
 		if( hpValue <= 0 )
 		{
-			//deathFlag = true;
+			deathFlag = true;
 		}
 	}
 
@@ -206,12 +242,20 @@ public class PlayerManager
 
 		if( stopFlag )
 		{
-			gauge.AddValue(-1);
-			if( gauge.GetRate() <= 0.0f )
-			{
+			timeStopTimer.DoUpdate(deltaTime);
+			gauge.SetValue( (int)( (1.0f - timeStopTimer.GetRate()) * GaugeManager.GAUGE_MAX) );
+			if ( timeStopTimer.IsEnd() )
+            {
 				stopFlag = false;
 				timeStop.SetFlag(false);
-			}
+            }
+
+			//gauge.AddValue(-1);
+			//if( gauge.GetRate() <= 0.0f )
+			//{
+			//	stopFlag = false;
+			//	timeStop.SetFlag(false);
+			//}
 		}
 	}
 
@@ -224,6 +268,8 @@ public class PlayerManager
 	//初期化処理
 	public void Reset()
 	{
+		timeStopTimer = new Timer(3.0f);
+
 		//時止め演出リセット
 		timeStop.Reset();
 
@@ -247,19 +293,19 @@ public class PlayerManager
 public class GaugeManager
 {
 	//現在の値
-	public int value;
+	public float value;
 
 	//ゲージの最大値
-	public const int GAUGE_MAX = 100;
+	public const float GAUGE_MAX = 100;
 
 	//ゲージを加算する
-	public void AddValue( int value )
+	public void AddValue( float value )
 	{
 		SetValue(this.value + value);
 	}
 
 	//ゲージの数値を設定する
-	public void SetValue( int value )
+	public void SetValue( float value )
 	{
 		if (value < 0) value = 0;
 		else if (value > GAUGE_MAX) value = GAUGE_MAX;
