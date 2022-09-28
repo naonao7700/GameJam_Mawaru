@@ -11,10 +11,20 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     float speed = 0f;
 
+    [SerializeField]
+    float timeStopSpeed = 0f;
+
 
     private void Update()
     {
-        rigidbody2D.velocity = transform.up * speed;
+        if (!GameManager.IsTimeStop())
+        {
+            rigidbody2D.velocity = transform.up * speed;
+        }
+        else if (GameManager.IsTimeStop())
+        {
+            rigidbody2D.velocity = transform.up * timeStopSpeed;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

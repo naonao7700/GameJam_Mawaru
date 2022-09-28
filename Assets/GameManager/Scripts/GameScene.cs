@@ -75,7 +75,7 @@ public class GameScene : MonoBehaviour, IScene
         }
 
 		//経過時間を更新
-		time.text = "経過時間：" + GameManager.GetTimeText();
+		time.text = GameManager.GetTimeText();
 
 		//スコアを更新
 		score.text = "Score:" + GameManager.GetScore().ToString("D8");

@@ -145,6 +145,8 @@ public class GameManager : MonoBehaviour
 		playerManager.DoUpdate(deltaTime);
 		timeManager.DoUpdate(deltaTime);
 
+		sound.volume = Mathf.Lerp(0.1f, 1.0f, TimeRate);
+
 		//ŽžŽ~‚ß‚ª‰Â”\‚©”»’è
 		if (CanTimeStop())
         {

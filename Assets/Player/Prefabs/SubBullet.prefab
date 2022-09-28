@@ -136,3 +136,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rigidbody2D: {fileID: 4092779528562716410}
   speed: 7
+  timeStopSpeed: 14

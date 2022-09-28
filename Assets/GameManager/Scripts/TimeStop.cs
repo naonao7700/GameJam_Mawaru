@@ -65,6 +65,7 @@ public class TimeStop : MonoBehaviour
 	{
 		step = TimeStopStep.None;
 		timer.Reset();
+		range = 0.0f;
 	}
 
 	public void SetFlag( bool value )
