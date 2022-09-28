@@ -24,7 +24,7 @@ public class GameScene : MonoBehaviour, IScene
     [SerializeField] private AudioClip[] bgmList;
 
 	//UIの遷移処理
-	public Timer uiTimer;
+	public FlagTimer uiTimer;
 
 	//スコアの座標
 	[SerializeField] private Vector3 scoreHidePos;
@@ -47,7 +47,8 @@ public class GameScene : MonoBehaviour, IScene
     //ゲームシーンの初期化
     public void OnEnter()
     {
-		uiTimer.Reset();
+		//表示演出開始
+		uiTimer.SetFlag(true);
 
         //BGMをランダムで再生する
         int rand = Random.Range(0, bgmList.Length);
@@ -78,31 +79,39 @@ public class GameScene : MonoBehaviour, IScene
 
         //ゲージの初期化処理
         GameManager.GaugeObject.Initialize();
+
+		//倒れたフラグ(死亡演出用のフラグリセット)
+		deathFlag = false;
     }
+
+	//プレイヤーが倒れたフラグ
+	public bool deathFlag;
 
     //ゲームシーンの更新
     public void DoUpdate()
     {
-        if( !GameManager.IsPlayerDeath() )
-        {
-            //データの更新処理
-            GameManager.DoUpdate(Time.deltaTime);
-        }
+		//プレイヤー倒れた時の処理
+		if( GameManager.IsPlayerDeath() && !deathFlag )
+		{
+			deathFlag = true;
+			playerObject.GetComponentInChildren<PlayerImage>().OnShake();
+		}
 
-        //ゲームオーバーになったとき
-        if ( GameManager.IsGameOver() )
-        {
-            //リザルトシーンへ遷移する
-            GameManager.OnChangeScene(SceneID.Result);
-        }
-
-		//UIの遷移演出
-		uiTimer.DoUpdate(Time.deltaTime);
-		var t = uiTimer.GetRate();
-		t = curve.Evaluate(t);
-		scoreImage.anchoredPosition = Vector3.Lerp(scoreHidePos, scoreViewPos, t);
-		gauge.anchoredPosition = Vector3.Lerp(gaugeHidePos, gaugeViewPos, t);
-		timeImage.anchoredPosition = Vector3.Lerp(timeHidePos, timeViewPos, t);
+		if( deathFlag )
+		{
+			//ゲームオーバーになったとき
+			if (GameManager.IsGameOver())
+			{
+				//リザルトシーンへ遷移する
+				GameManager.OnChangeScene(SceneID.Result);
+			}
+			return;
+		}
+		else
+		{
+			//データの更新処理
+			GameManager.DoUpdate(Time.deltaTime);
+		}
 
 		//経過時間を更新
 		time.text = GameManager.GetTimeText();
@@ -118,4 +127,16 @@ public class GameScene : MonoBehaviour, IScene
     public void OnExit()
     {
     }
+
+	//UIの遷移演出
+	public void UIUpdate( float deltaTime )
+	{
+		//UIの遷移演出
+		uiTimer.DoUpdate(Time.deltaTime);
+		var t = uiTimer.GetRate();
+		t = curve.Evaluate(t);
+		scoreImage.anchoredPosition = Vector3.Lerp(scoreHidePos, scoreViewPos, t);
+		gauge.anchoredPosition = Vector3.Lerp(gaugeHidePos, gaugeViewPos, t);
+		timeImage.anchoredPosition = Vector3.Lerp(timeHidePos, timeViewPos, t);
+	}
 }

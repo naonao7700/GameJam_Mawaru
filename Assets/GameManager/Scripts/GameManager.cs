@@ -2,8 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameMode
+{
+	Standard,	//通常
+	Clocks,		//時計
+};
+
 public class GameManager : MonoBehaviour
 {
+	//針の回転方法
+	public static GameMode Mode;
+
 	public static void DoUpdate(float deltaTime) => instance.DoUpdateCore(deltaTime);
 
 	//シーンを変更する処理
@@ -64,8 +73,8 @@ public class GameManager : MonoBehaviour
 	public static bool GetDownButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") > 0.0f) || (Input.GetAxis("L_Horizontal") > 0.0f);
 
 	//時止めボタンを押した
-	//public static bool GetTimeStopButtonDown() => Input.anyKeyDown;//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
-	public static bool GetTimeStopButtonDown() => Input.anyKeyDown && !Input.GetButtonDown("Horizontal");//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
+	public static bool GetTimeStopButtonDown() => Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
+	//public static bool GetTimeStopButtonDown() => Input.anyKeyDown && !Input.GetButtonDown("Horizontal");//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
 
 	//ゲーム開始時の初期化処理
 	public static void OnGameStart() => instance.OnGameStartCore();
@@ -138,6 +147,18 @@ public class GameManager : MonoBehaviour
         {
 			GameObject.Destroy(bullet.gameObject);
         }
+
+		var player = GameObject.FindGameObjectWithTag("Player");
+		if( player != null )
+		{
+			GameObject.Destroy(player);
+		}
+
+		var enemyManager = GameObject.FindObjectOfType<EnemyManeger>();
+		if( enemyManager != null )
+		{
+			GameObject.Destroy(enemyManager.gameObject);
+		}
 	}
 
 	//更新処理
@@ -283,6 +304,7 @@ public class PlayerManager
 	//プレイヤーがダメージを受けたとき
 	public void OnDamage( int value )
 	{
+		if (stopFlag) return;
 		if (deathFlag) return;
 
 		hpValue -= value;
@@ -303,10 +325,16 @@ public class PlayerManager
 	//更新処理
 	public void DoUpdate( float deltaTime )
 	{
+#if UNITY_EDITOR
 		if( Input.GetKeyDown(KeyCode.Y))
 		{
-			gauge.SetValue(70);
+			gauge.SetValue(60);
 		}
+		if( Input.GetKeyDown(KeyCode.I))
+		{
+			GameManager.OnPlayerDamage(100);
+		}
+#endif
 
 		timeStop.DoUpdate(deltaTime);
 
@@ -315,7 +343,7 @@ public class PlayerManager
 		if( stopFlag )
 		{
 			timeStopTimer.DoUpdate(deltaTime);
-			gauge.SetValue( (int)( (1.0f - timeStopTimer.GetRate()) * GaugeManager.GAUGE_MAX) );
+			gauge.SetRate( (1.0f - timeStopTimer.GetRate()) );
 			if ( timeStopTimer.IsEnd() )
             {
 				stopFlag = false;
@@ -361,11 +389,14 @@ public class GaugeManager
 	//ゲージMAX時の効果音
 	[SerializeField] private AudioClip gaugeMaxSE;
 
+	[SerializeField] private float prevValue;	//前回の値
+	[SerializeField] private float threshold;	//閾値
+
 	//現在の値
 	public float value;
 
 	//ゲージの最大値
-	public const float GAUGE_MAX = 70;
+	[SerializeField]public float GAUGE_MAX = 70;
 
 	//ゲージを加算する
 	public void AddValue( float value )
@@ -386,9 +417,28 @@ public class GaugeManager
 	//ゲージの数値を設定する
 	public void SetValue( float value )
 	{
+		//前回の量を保持
+		prevValue = this.value;
+
 		if (value < 0) value = 0;
 		else if (value > GAUGE_MAX) value = GAUGE_MAX;
 		this.value = value;
+
+		if( this.value - prevValue > threshold )
+		{
+			GameManager.GaugeObject.MaxSpeed();
+		}
+		else
+		{
+			GameManager.GaugeObject.NormalSpeed();
+		}
+	}
+
+	public void SetRate( float rate )
+	{
+		this.value = rate * GAUGE_MAX;
+		if (value < 0) value = 0;
+		if (value > GAUGE_MAX) value = GAUGE_MAX;
 	}
 
 	//ゲージの割合を取得する

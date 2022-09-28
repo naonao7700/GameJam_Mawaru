@@ -29,6 +29,8 @@ public class SceneManager : MonoBehaviour
 	{
 		//現在のシーンを更新する
 		currentScene.DoUpdate();
+
+		gameScene.UIUpdate(Time.deltaTime);
 	}
 
 	//シーンの切り替え処理
@@ -44,7 +46,12 @@ public class SceneManager : MonoBehaviour
 		//シーンを設定する
 		switch (sceneID)
 		{
-			case SceneID.Title: currentScene = titleScene; break;
+			case SceneID.Title:
+				{
+					currentScene = titleScene;
+					gameScene.uiTimer.SetFlag(false);
+					break;
+				}
 			case SceneID.Game: currentScene = gameScene; break;
 			case SceneID.Result: currentScene = resultScene; break;
 		}

@@ -34,7 +34,9 @@ public struct Timer
 
     public float GetRate()
     {
-        return count / time;
+		var t = count / time;
+		if (t > 1.0f) t = 1.0f;
+		return t;
     }
 
 }

@@ -19,18 +19,41 @@ public class ResultScene : MonoBehaviour, IScene
     //カーソル画像リスト
     [SerializeField] private GameObject[] cursorImage;
 
+	//スコアテキスト
     [SerializeField] private Text scoreText;
     [SerializeField] private Text highScoreText;
+
+	//遷移演出タイマー
+	[SerializeField] private Timer startTimer;
+	[SerializeField] private AnimationCurve curve;
+
+	[SerializeField] private RectTransform buttons;	//ボタン
+	[SerializeField] private Image backImage;   //背景の黒色
+
+	[SerializeField] private Vector3 buttonHidePos;
+	[SerializeField] private Vector3 buttonViewPos;
+
 
     //リザルトシーンの初期化
     public void OnEnter()
     {
+		startTimer.Reset();
+
         //ハイスコアを更新する
         GameManager.UpdateHighScore();
 
         scoreText.text = "スコア：" + GameManager.GetScore();
         highScoreText.text = "ハイスコア：" + GameManager.GetHighScore();
 
+		//遷移前の座標へ移動
+		var color = Color.white;
+		color.a = 0.0f;
+		scoreText.color = color;
+		highScoreText.color = color;
+		color = backImage.color;
+		color.a = 0.0f;
+		backImage.color = color;
+		buttons.anchoredPosition = buttonHidePos;
 
         //リザルト画面を表示する
         gameObject.SetActive(true);
@@ -58,6 +81,24 @@ public class ResultScene : MonoBehaviour, IScene
     //リザルトシーンの更新
     public void DoUpdate()
     {
+		if( !startTimer.IsEnd() )
+		{
+			startTimer.DoUpdate(Time.deltaTime);
+			var t = curve.Evaluate(startTimer.GetRate());
+			var color = backImage.color;
+			color.a = Mathf.Lerp(0.0f, 0.35f, t);
+			backImage.color = color;
+
+			color = scoreText.color;
+			color.a = Mathf.Lerp(0.0f, 1.0f, t);
+			scoreText.color = color;
+			highScoreText.color = color;
+
+			buttons.anchoredPosition = Vector3.Lerp(buttonHidePos, buttonViewPos, t);
+
+			return;
+		}
+
         //カーソルの移動処理
         int cursor = cursorPos;
         if( GameManager.GetUpButtonDown() )

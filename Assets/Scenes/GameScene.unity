@@ -313,6 +313,14 @@ MonoBehaviour:
   - {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
   deathImage: {fileID: 0}
   angle: 0
+  waitTimer:
+    count: 0
+    time: 0
+  shakeTimer:
+    count: 0
+    time: 0
+  shakeFlag: 0
+  shakeOffset: 0
 --- !u!4 &74242098
 Transform:
   m_ObjectHideFlags: 0
@@ -361,8 +369,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2040, y: 0}
-  m_SizeDelta: {x: 2480.2656, y: 3508}
+  m_AnchoredPosition: {x: -1500, y: 0}
+  m_SizeDelta: {x: 1240.1328, y: 1754}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &177430363
 MonoBehaviour:
@@ -515,6 +523,37 @@ MonoBehaviour:
   - {fileID: 1093644756}
   scoreText: {fileID: 1542405491}
   highScoreText: {fileID: 744207770}
+  startTimer:
+    count: 0
+    time: 1
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  buttons: {fileID: 482486889}
+  backImage: {fileID: 457387811}
+  buttonHidePos: {x: 0, y: -110, z: 0}
+  buttonViewPos: {x: 0, y: 146, z: 0}
 --- !u!4 &283407656
 Transform:
   m_ObjectHideFlags: 0
@@ -605,6 +644,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 457387809}
   m_CullTransparentMesh: 1
+--- !u!1 &482486888
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 482486889}
+  m_Layer: 5
+  m_Name: buttons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &482486889
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 482486888}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1508342284}
+  - {fileID: 610826956}
+  m_Father: {fileID: 1608708978}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: -110}
+  m_SizeDelta: {x: 100, y: 216}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &564515439
 GameObject:
   m_ObjectHideFlags: 0
@@ -679,12 +755,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1093644757}
-  m_Father: {fileID: 1608708978}
-  m_RootOrder: 5
+  m_Father: {fileID: 482486889}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 275.9, y: -395.3}
+  m_AnchoredPosition: {x: 275.9, y: 0}
   m_SizeDelta: {x: 512, y: 216}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &610826957
@@ -2145,12 +2221,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2097761146}
-  m_Father: {fileID: 1608708978}
-  m_RootOrder: 4
+  m_Father: {fileID: 482486889}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -275.9, y: -395.3}
+  m_AnchoredPosition: {x: -275.9, y: 0}
   m_SizeDelta: {x: 512, y: 216}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1542405489
@@ -2266,8 +2342,7 @@ RectTransform:
   - {fileID: 863788137}
   - {fileID: 1542405490}
   - {fileID: 744207769}
-  - {fileID: 1508342284}
-  - {fileID: 610826956}
+  - {fileID: 482486889}
   m_Father: {fileID: 283407656}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2456,6 +2531,7 @@ MonoBehaviour:
   bgmList:
   - {fileID: 8300000, guid: e14a655954c179143aef77c9b2b3a8fb, type: 3}
   uiTimer:
+    flag: 0
     count: 0
     time: 1
   scoreHidePos: {x: 631.1, y: 720.92, z: 0}
@@ -2491,6 +2567,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  deathFlag: 0
 --- !u!4 &1942187772
 Transform:
   m_ObjectHideFlags: 0
@@ -2646,8 +2723,8 @@ MonoBehaviour:
     deathEffectPrefab: {fileID: 100004, guid: 7867af58a6ec48846ae807eb4022fbaa, type: 3}
     CutInManager:
       image: {fileID: 177430363}
-      startPos: {x: -2040, y: 0, z: 0}
-      endPos: {x: 0, y: 0, z: 0}
+      startPos: {x: -1500, y: 0, z: 0}
+      endPos: {x: -300, y: 0, z: 0}
       startScale: {x: 1, y: 1, z: 1}
       endScale: {x: 2, y: 2, z: 2}
       times:
@@ -2670,7 +2747,10 @@ MonoBehaviour:
     damageSE: {fileID: 8300000, guid: 2174f3ff0acf3374492ab63222e5e16f, type: 3}
     gauge:
       gaugeMaxSE: {fileID: 8300000, guid: e31a52ef30aecb447835c0e1ba9a49c6, type: 3}
+      prevValue: 0
+      threshold: 0
       value: 0
+      GAUGE_MAX: 70
     timeStop: {fileID: 963194229}
   scoreManager:
     score: 0

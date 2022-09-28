@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct FlagTimer
 {
-    private bool flag;
+    [SerializeField] private bool flag;
 
-    private float count;
-    private float time;
+    [SerializeField] private float count;
+    [SerializeField] private float time;
 
     public FlagTimer(float time, float count = 0.0f)
     {
@@ -33,7 +34,9 @@ public struct FlagTimer
 
     public float GetRate()
     {
-        return count / time;
+		var t = count / time;
+		if (t > 1.0f) t = 1.0f;
+		return t;
     }
 
     public void SetFlag(bool value)

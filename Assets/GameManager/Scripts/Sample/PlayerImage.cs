@@ -10,6 +10,11 @@ public class PlayerImage : MonoBehaviour
 
     [Range(0, 360)] public float angle;
 
+	[SerializeField] private Timer waitTimer;
+	[SerializeField] private Timer shakeTimer;
+	[SerializeField] private bool shakeFlag;
+	[SerializeField] private float shakeOffset;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +41,22 @@ public class PlayerImage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+		if( shakeFlag )
+		{
+			waitTimer.DoUpdate(Time.deltaTime);
+			if( waitTimer.IsEnd() )
+			{
+				shakeTimer.DoUpdate(Time.deltaTime);
+				var t = 1.0f - shakeTimer.GetRate();
+				var randX = Random.Range(-shakeOffset, shakeOffset);
+				var randY = Random.Range(-shakeOffset, shakeOffset);
+				var pos = transform.localPosition;
+				pos.x = randX * t;
+				pos.y = randY * t;
+				transform.localPosition = pos;
+			}
+		}
+
         if( GameManager.IsPlayerDeath() )
         {
             render.sprite = deathImage;
@@ -46,4 +67,11 @@ public class PlayerImage : MonoBehaviour
             render.sprite = images[index];
         }
     }
+
+	public void OnShake()
+	{
+		shakeFlag = true;
+		waitTimer.Reset();
+		shakeTimer.Reset();
+	}
 }
