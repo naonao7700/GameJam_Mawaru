@@ -61,11 +61,14 @@ public class GameScene : MonoBehaviour, IScene
     //ゲームシーンの更新
     public void DoUpdate()
     {
-		//データの更新処理
-		GameManager.DoUpdate(Time.deltaTime);
+        if( !GameManager.IsPlayerDeath() )
+        {
+            //データの更新処理
+            GameManager.DoUpdate(Time.deltaTime);
+        }
 
         //ゲームオーバーになったとき
-        if( GameManager.IsGameOver() )
+        if ( GameManager.IsGameOver() )
         {
             //リザルトシーンへ遷移する
             GameManager.OnChangeScene(SceneID.Result);

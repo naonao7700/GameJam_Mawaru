@@ -23,6 +23,7 @@ public class GaugeObject : MonoBehaviour
     //‰Šú‰»ˆ—
     public void Initialize()
     {
+        nGS.CloseAnim();
         NormalSpeed();
         Amount(0);
     }

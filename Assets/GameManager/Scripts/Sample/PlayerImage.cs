@@ -6,6 +6,7 @@ public class PlayerImage : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer render;
     [SerializeField] private Sprite[] images;
+    [SerializeField] private Sprite deathImage;
 
     [Range(0, 360)] public float angle;
 
@@ -35,7 +36,14 @@ public class PlayerImage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int index = GetAngleIndex(angle);
-        render.sprite = images[index];
+        if( GameManager.IsPlayerDeath() )
+        {
+            render.sprite = deathImage;
+        }
+        else
+        {
+            int index = GetAngleIndex(angle);
+            render.sprite = images[index];
+        }
     }
 }

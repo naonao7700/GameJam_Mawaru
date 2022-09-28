@@ -19,9 +19,19 @@ public class ResultScene : MonoBehaviour, IScene
     //カーソル画像リスト
     [SerializeField] private GameObject[] cursorImage;
 
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text highScoreText;
+
     //リザルトシーンの初期化
     public void OnEnter()
     {
+        //ハイスコアを更新する
+        GameManager.UpdateHighScore();
+
+        scoreText.text = "スコア：" + GameManager.GetScore();
+        highScoreText.text = "ハイスコア：" + GameManager.GetHighScore();
+
+
         //リザルト画面を表示する
         gameObject.SetActive(true);
 

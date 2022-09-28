@@ -12,8 +12,11 @@ public class GameManager : MonoBehaviour
 	//敵キャラを全て消す
 	public static void OnDeleteAllEnemy() => instance.OnDeleteAllEnemyCore();
 
+	//プレイヤーが死んだフラグを取得する
+	public static bool IsPlayerDeath() => instance.playerManager.deathFlag;
+
 	//ゲームオーバーになったか判定
-	public static bool IsGameOver() => instance.playerManager.deathFlag;
+	public static bool IsGameOver() => instance.playerManager.GetDeathFlag();
 
 	//プレイヤーがダメージを受けた時
 	public static void OnPlayerDamage(int value) => instance.playerManager.OnDamage(value);
@@ -29,6 +32,12 @@ public class GameManager : MonoBehaviour
 
 	//スコアを設定する
 	public static void SetScore(int value) => instance.scoreManager.SetScore(value);
+
+	//ハイスコアを更新する
+	public static void UpdateHighScore() => instance.scoreManager.UpdateHighScore();
+
+	//ハイスコアを取得する
+	public static int GetHighScore() => instance.scoreManager.highScore;
 
 	//経過時間を取得する
 	public static string GetTimeText() => instance.timeManager.GetText();
@@ -46,7 +55,7 @@ public class GameManager : MonoBehaviour
 	public static float TimeRate => 1.0f - instance.playerManager.timeStop.range;
 
 	//決定ボタンを押した
-	public static bool GetSubmitButtonDown() => GetTimeStopButtonDown() || Input.GetKeyDown(KeyCode.Joystick1Button0);
+	public static bool GetSubmitButtonDown() => GetTimeStopButtonDown();
 
 	//上ボタンを押した
 	public static bool GetUpButtonDown() => (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0.0f) || ( Input.GetAxis("L_Vertical") < 0.0f );
@@ -55,7 +64,7 @@ public class GameManager : MonoBehaviour
 	public static bool GetDownButtonDown() => (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f) || (Input.GetAxis("L_Vertical") > 0.0f);
 
 	//時止めボタンを押した
-	public static bool GetTimeStopButtonDown() => Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
+	public static bool GetTimeStopButtonDown() => Input.anyKeyDown;//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
 
 	//ゲーム開始時の初期化処理
 	public static void OnGameStart() => instance.OnGameStartCore();
@@ -70,8 +79,8 @@ public class GameManager : MonoBehaviour
 	public static void PlaySE(AudioClip clip) => instance._PlaySE(clip);
 
 	//エフェクトを再生する
-	public static void PlayEffect(GameObject prefab, Vector3 position) => instance._PlayEffect(prefab, position, Quaternion.identity);
-	public static void PlayEffect(GameObject prefab, Vector3 position, Quaternion rotation) => instance._PlayEffect(prefab, position, rotation);
+	public static GameObject PlayEffect(GameObject prefab, Vector3 position) => instance._PlayEffect(prefab, position, Quaternion.identity);
+	public static GameObject PlayEffect(GameObject prefab, Vector3 position, Quaternion rotation) => instance._PlayEffect(prefab, position, rotation);
 
 	//シングルトン
 	private static GameManager _instance;
@@ -168,9 +177,9 @@ public class GameManager : MonoBehaviour
     }
 
 	//エフェクトを生成する
-	private void _PlayEffect( GameObject prefab, Vector3 position, Quaternion rotation )
+	private GameObject _PlayEffect( GameObject prefab, Vector3 position, Quaternion rotation )
     {
-		GameObject.Instantiate(prefab, position, rotation);
+		return GameObject.Instantiate(prefab, position, rotation);
     }
 
 }
@@ -219,6 +228,10 @@ public class TimeManager
 [System.Serializable]
 public class PlayerManager
 {
+	[SerializeField] private GameObject deathEffectPrefab;  //死亡時のエフェクト
+
+	private GameObject effect;
+
 	//現在のHP
 	public int hpValue;
 
@@ -261,13 +274,23 @@ public class PlayerManager
 	//プレイヤーがダメージを受けたとき
 	public void OnDamage( int value )
 	{
+		if (deathFlag) return;
+
 		hpValue -= value;
 		if (hpValue < 0) hpValue = 0;
 		if( hpValue <= 0 )
 		{
+			GameManager.PlaySE(damageSE);
+			effect = GameManager.PlayEffect(deathEffectPrefab, new Vector3(0,0, -3));
 			deathFlag = true;
 		}
 	}
+
+	public bool GetDeathFlag()
+    {
+		return
+			deathFlag && effect == null;
+    }
 
 	//更新処理
 	public void DoUpdate( float deltaTime )
@@ -333,7 +356,7 @@ public class GaugeManager
 	public float value;
 
 	//ゲージの最大値
-	public const float GAUGE_MAX = 100;
+	public const float GAUGE_MAX = 70;
 
 	//ゲージを加算する
 	public void AddValue( float value )
@@ -381,6 +404,14 @@ public class ScoreManager
 
 	//スコアの最大値
 	public const int SCORE_MAX = 99999999;
+
+	public void UpdateHighScore()
+    {
+		if( highScore < score )
+        {
+			highScore = score;
+        }
+    }
 
 	//スコアを加算する
 	public void AddScore( int value )
