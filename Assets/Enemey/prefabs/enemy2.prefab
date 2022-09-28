@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 229927844184243652}
   - component: {fileID: 1028788312303623720}
   - component: {fileID: 2661036079010615767}
+  - component: {fileID: 4003488686655214781}
   m_Layer: 0
   m_Name: enemy2
   m_TagString: Enemy
@@ -152,3 +153,19 @@ MonoBehaviour:
   StopEfect: {fileID: 0}
   StopDethEfect: {fileID: 0}
   deathSE: {fileID: 8300000, guid: b79054d2151d96d42aafa8478c932816, type: 3}
+--- !u!114 &4003488686655214781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3217050856331451027}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: accffb70eaae6b949a2834275d90f7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
+  addAngle: 0.01
+  centerX: 0
+  centerY: 0

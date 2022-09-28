@@ -7,9 +7,8 @@ public class HitBullet : MonoBehaviour
     public GameObject DethEfect;
     public GameObject StopEfect;
     public GameObject StopDethEfect;
-    bool Dethflag;
     public AudioClip deathSE;
-
+    bool Dethflag;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,7 +23,7 @@ public class HitBullet : MonoBehaviour
             //Instantiate(StopEfect,transform.position, transform.rotation);
             if(GameManager.TimeRate >= 0.9f)
             {
-                GameManager.PlaySE(deathSE);    //Œø‰Ê‰¹Ä¶
+                GameManager.PlaySE(deathSE);
                 Destroy(gameObject);
                 Instantiate(StopDethEfect, transform.position, transform.rotation);
                 GameManager.AddScore(100);

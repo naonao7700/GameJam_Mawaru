@@ -58,10 +58,10 @@ public class GameManager : MonoBehaviour
 	public static bool GetSubmitButtonDown() => GetTimeStopButtonDown();
 
 	//上ボタンを押した
-	public static bool GetUpButtonDown() => (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0.0f) || ( Input.GetAxis("L_Vertical") < 0.0f );
+	public static bool GetUpButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") < 0.0f) || ( Input.GetAxis("L_Horizontal") < 0.0f );
 
 	//下ボタンを押した
-	public static bool GetDownButtonDown() => (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f) || (Input.GetAxis("L_Vertical") > 0.0f);
+	public static bool GetDownButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") > 0.0f) || (Input.GetAxis("L_Horizontal") > 0.0f);
 
 	//時止めボタンを押した
 	public static bool GetTimeStopButtonDown() => Input.anyKeyDown;//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 	public static void PlayBGM(AudioClip clip) => instance._PlayBGM(clip);
 
 	//SEを再生する
-	public static void PlaySE(AudioClip clip) => instance._PlaySE(clip);
+	public static void PlaySE(AudioClip clip, float volume = 1.0f ) => instance._PlaySE(clip, volume );
 
 	//エフェクトを再生する
 	public static GameObject PlayEffect(GameObject prefab, Vector3 position) => instance._PlayEffect(prefab, position, Quaternion.identity);
@@ -160,6 +160,7 @@ public class GameManager : MonoBehaviour
 	}
 
 	[SerializeField] private AudioSource sound;
+	[SerializeField] private AudioSource seSound;
 
 	public static GaugeObject GaugeObject => instance.gauge;
 	[SerializeField] private GaugeObject gauge;//ゲージ
@@ -173,9 +174,9 @@ public class GameManager : MonoBehaviour
     }
 
 	//SEを再生する
-	private void _PlaySE( AudioClip clip )
+	private void _PlaySE( AudioClip clip, float volume = 1.0f )
     {
-		sound.PlayOneShot(clip);
+		seSound.PlayOneShot(clip, volume );
     }
 
 	//エフェクトを生成する
@@ -263,8 +264,8 @@ public class PlayerManager
 	public void OnTimeStop()
 	{
 		//効果音鳴らす
-		GameManager.PlaySE(timeStopSE1);
-		GameManager.PlaySE(timeStopSE2);
+		GameManager.PlaySE(timeStopSE1, 3.0f );
+		GameManager.PlaySE(timeStopSE2 );
 
 		GameManager.GaugeObject.Release();
 
