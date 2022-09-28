@@ -12,7 +12,6 @@ public class GameScene : MonoBehaviour, IScene
 	[SerializeField] private Text score;	//スコア
 	[SerializeField] private Text time;	//経過時間
 
-
     //インスタンス生成用のPrefab参照設定
     [SerializeField] private GameObject playerPrefab;    //プレイヤーのPrefab参照
     [SerializeField] private GameObject enemyPrefab;    //敵キャラのPrefab参照
@@ -24,9 +23,32 @@ public class GameScene : MonoBehaviour, IScene
 
     [SerializeField] private AudioClip[] bgmList;
 
+	//UIの遷移処理
+	public Timer uiTimer;
+
+	//スコアの座標
+	[SerializeField] private Vector3 scoreHidePos;
+	[SerializeField] private Vector3 scoreViewPos;
+
+	//ゲージの座標
+	[SerializeField] private Vector3 gaugeHidePos;
+	[SerializeField] private Vector3 gaugeViewPos;
+
+	//経過時間の座標
+	[SerializeField] private Vector3 timeHidePos;
+	[SerializeField] private Vector3 timeViewPos;
+
+	//UIオブジェクト
+	[SerializeField] private RectTransform gauge;
+	[SerializeField] private RectTransform scoreImage;
+	[SerializeField] private RectTransform timeImage;
+	[SerializeField] private AnimationCurve curve;
+
     //ゲームシーンの初期化
     public void OnEnter()
     {
+		uiTimer.Reset();
+
         //BGMをランダムで再生する
         int rand = Random.Range(0, bgmList.Length);
         GameManager.PlayBGM(bgmList[rand]);
@@ -73,6 +95,14 @@ public class GameScene : MonoBehaviour, IScene
             //リザルトシーンへ遷移する
             GameManager.OnChangeScene(SceneID.Result);
         }
+
+		//UIの遷移演出
+		uiTimer.DoUpdate(Time.deltaTime);
+		var t = uiTimer.GetRate();
+		t = curve.Evaluate(t);
+		scoreImage.anchoredPosition = Vector3.Lerp(scoreHidePos, scoreViewPos, t);
+		gauge.anchoredPosition = Vector3.Lerp(gaugeHidePos, gaugeViewPos, t);
+		timeImage.anchoredPosition = Vector3.Lerp(timeHidePos, timeViewPos, t);
 
 		//経過時間を更新
 		time.text = GameManager.GetTimeText();

@@ -64,7 +64,8 @@ public class GameManager : MonoBehaviour
 	public static bool GetDownButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") > 0.0f) || (Input.GetAxis("L_Horizontal") > 0.0f);
 
 	//時止めボタンを押した
-	public static bool GetTimeStopButtonDown() => Input.anyKeyDown;//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
+	//public static bool GetTimeStopButtonDown() => Input.anyKeyDown;//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
+	public static bool GetTimeStopButtonDown() => Input.anyKeyDown && !Input.GetButtonDown("Horizontal");//Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
 
 	//ゲーム開始時の初期化処理
 	public static void OnGameStart() => instance.OnGameStartCore();
