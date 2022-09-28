@@ -59,3 +59,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   addAngle: 0.01
+  centerX: 0
+  centerY: 0

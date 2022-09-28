@@ -14,19 +14,22 @@ public class PlayerShot : MonoBehaviour
     GameObject subBulletPrefab;
 
     [SerializeField]
-    float mainShotInterval;
+    AudioClip bulletSound;
 
     [SerializeField]
-    float subShotInterval;
+    float mainShotInterval; // ’Êí‚Ì’·j‚Ì’e‚ÌƒCƒ“ƒ^[ƒoƒ‹
 
     [SerializeField]
-    float timeStopMainShotInterval;
+    float subShotInterval; // ’Êí‚Ì’Zj‚Ì’e‚ÌƒCƒ“ƒ^[ƒoƒ‹
 
     [SerializeField]
-    float timeStopSubShotInterval;
+    float timeStopMainShotInterval; // ~‚ß‚Ì’·j‚Ì’e‚ÌƒCƒ“ƒ^[ƒoƒ‹
 
     [SerializeField]
-    float subShotWayAngle;
+    float timeStopSubShotInterval; // ~‚ß‚Ì’Zj‚Ì’e‚ÌƒCƒ“ƒ^[ƒoƒ‹
+
+    [SerializeField]
+    float subShotWayAngle; // ’Zj‚Ì3way‚ÌŠp“x
 
     private float mainShotTimer;
     private float subShotTimer;
@@ -83,5 +86,6 @@ public class PlayerShot : MonoBehaviour
         Instantiate(subBulletPrefab, player.subShotPos.position, Quaternion.Euler(0, 0, player.subRot));
         Instantiate(subBulletPrefab, player.subShotPos.position, Quaternion.Euler(0, 0, player.subRot - subShotWayAngle));
         Instantiate(subBulletPrefab, player.subShotPos.position, Quaternion.Euler(0, 0, player.subRot + subShotWayAngle));
+        GameManager.PlaySE(bulletSound);
     }
 }

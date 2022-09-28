@@ -46,13 +46,13 @@ public class GameManager : MonoBehaviour
 	public static float TimeRate => 1.0f - instance.playerManager.timeStop.range;
 
 	//決定ボタンを押した
-	public static bool GetSubmitButtonDown() => Input.GetButtonDown("Submit");
+	public static bool GetSubmitButtonDown() => GetTimeStopButtonDown() || Input.GetKeyDown(KeyCode.Joystick1Button0);
 
 	//上ボタンを押した
-	public static bool GetUpButtonDown() => Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0.0f;
+	public static bool GetUpButtonDown() => (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") < 0.0f) || ( Input.GetAxis("L_Vertical") < 0.0f );
 
 	//下ボタンを押した
-	public static bool GetDownButtonDown() => Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f;
+	public static bool GetDownButtonDown() => (Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f) || (Input.GetAxis("L_Vertical") > 0.0f);
 
 	//時止めボタンを押した
 	public static bool GetTimeStopButtonDown() => Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
@@ -123,6 +123,11 @@ public class GameManager : MonoBehaviour
 		{
 			GameObject.Destroy(enemy.gameObject);
 		}
+
+		foreach( var bullet in GameObject.FindObjectsOfType<Bullet>() )
+        {
+			GameObject.Destroy(bullet.gameObject);
+        }
 	}
 
 	//更新処理
@@ -144,6 +149,10 @@ public class GameManager : MonoBehaviour
 	}
 
 	[SerializeField] private AudioSource sound;
+
+	public static GaugeObject GaugeObject => instance.gauge;
+	[SerializeField] private GaugeObject gauge;//ゲージ
+
 
 	//BGMを再生する
 	private void _PlayBGM( AudioClip clip )
@@ -187,7 +196,15 @@ public class TimeManager
 		if( seconds >= 60.0f )
 		{
 			minute++;
-			seconds = seconds - 60.0f;
+			if (minute > 99)
+			{
+				minute = 99;
+				seconds = 59.0f;
+			}
+			else
+            {
+				seconds = seconds - 60.0f;
+			}
 		}
 	}
 
@@ -222,8 +239,20 @@ public class PlayerManager
 		return true;
 	}
 
+	//効果音指定
+	[SerializeField] private AudioClip timeStopSE1;
+	[SerializeField] private AudioClip timeStopSE2;
+	[SerializeField] private AudioClip damageSE;
+
+	//時止め発動
 	public void OnTimeStop()
 	{
+		//効果音鳴らす
+		GameManager.PlaySE(timeStopSE1);
+		GameManager.PlaySE(timeStopSE2);
+
+		GameManager.GaugeObject.Release();
+
 		stopFlag = true;
 		timeStop.SetFlag(true);
 		timeStopTimer.Reset();
@@ -297,6 +326,9 @@ public class PlayerManager
 [System.Serializable]
 public class GaugeManager
 {
+	//ゲージMAX時の効果音
+	[SerializeField] private AudioClip gaugeMaxSE;
+
 	//現在の値
 	public float value;
 
@@ -306,6 +338,16 @@ public class GaugeManager
 	//ゲージを加算する
 	public void AddValue( float value )
 	{
+		//効果音鳴らす
+		if (this.value < GAUGE_MAX)
+        {
+			if( this.value + value >= GAUGE_MAX )
+            {
+				GameManager.PlaySE(gaugeMaxSE);
+				GameManager.GaugeObject.ReachGauge();
+            }
+        }
+
 		SetValue(this.value + value);
 	}
 

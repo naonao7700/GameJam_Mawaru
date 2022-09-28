@@ -54,13 +54,15 @@ public class ResultScene : MonoBehaviour, IScene
         {
             //カーソルを上へ動かす
             cursor--;
-            if (cursor < 0) cursor = cursorImage.Length - 1;    //ループ対応
+            if (cursor < 0) cursor = 0;
+            //if (cursor < 0) cursor = cursorImage.Length - 1;    //ループ対応
         }
         else if( GameManager.GetDownButtonDown() )
         {
             //カーソルを下へ動かす
             cursor++;
-            if (cursor >= cursorImage.Length ) cursor = 0;  //ループ対応
+            if (cursor >= cursorImage.Length) cursor = cursorImage.Length - 1;
+            //if (cursor >= cursorImage.Length ) cursor = 0;  //ループ対応
         }
 
         //カーソル位置を更新する

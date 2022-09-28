@@ -8,7 +8,6 @@ public class GameScene : MonoBehaviour, IScene
 {
     //UI
     [SerializeField] private GameObject ui;
-    [SerializeField] private gaugeScript gauge; //ゲージ
 
 	[SerializeField] private Text score;	//スコア
 	[SerializeField] private Text time;	//経過時間
@@ -54,6 +53,9 @@ public class GameScene : MonoBehaviour, IScene
 
         //敵キャラの生成
         enemyObject = GameObject.Instantiate(enemyPrefab);
+
+        //ゲージの初期化処理
+        GameManager.GaugeObject.Initialize();
     }
 
     //ゲームシーンの更新
@@ -76,7 +78,7 @@ public class GameScene : MonoBehaviour, IScene
 		score.text = "Score:" + GameManager.GetScore().ToString("D8");
 
         //ゲージの更新
-        gauge.Change(GameManager.GetGaugeRate());
+        GameManager.GaugeObject.Amount(GameManager.GetGaugeRate());
     }
 
     //ゲームシーンの終了処理
