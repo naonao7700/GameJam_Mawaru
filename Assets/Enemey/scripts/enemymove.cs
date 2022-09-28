@@ -26,6 +26,7 @@ public class enemymove : MonoBehaviour
 
         // •ûŒü = ‘Šè‚ÌÀ•W - ©•ª‚ÌÀ•W;
         dir = player.transform.position - transform.position;
+        this.transform.rotation = Quaternion.FromToRotation(Vector3.up,dir);
         //.normalized ³‹K‰»‚µ‚Ä’·‚³‚ğ‚P‚É
         //Update()‚ÅˆÚ“®‚·‚éê‡‚Í@Time.deltaTime ‚ğ‚©‚¯‚é
         // Update‚ÌXV‚É‚©‚©‚Á‚½ŠÔ‚ª“ü‚Á‚Ä‚¢‚é
@@ -42,9 +43,8 @@ public class enemymove : MonoBehaviour
 
         if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
         {
-            transform.Translate(dir.normalized * speed * Time.deltaTime);
+            transform.Translate(Vector3.up/*dir.normalized*/ * speed * Time.deltaTime);
         }
-
     }
 
     //‰~“¯m‚Ì“–‚½‚è”»’è

@@ -47,8 +47,11 @@ Shader "Hidden/TimeStop"
 				
 				float d = distance(i.uv, float2(0.5,0.5));
 				d = step(d, _Range);
-				float3 gray = (col.r + col.g + col.b) / 3;
-				col.rgb = lerp( col.rgb, gray, d );
+                float3 gray = col.r * 0.299f + col.g * 0.587f + col.b * 0.114f / 3;
+				
+                gray = abs( 1.0 - col.rgb);
+
+                col.rgb = lerp( col.rgb, gray, d );
 
 				return col;
             }

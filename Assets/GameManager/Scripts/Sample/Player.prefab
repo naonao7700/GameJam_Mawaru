@@ -318,6 +318,7 @@ MonoBehaviour:
   subBulletPrefab: {fileID: 7091400095371788542, guid: 9662c8fec1fef5b459e902eef0b999f9, type: 3}
   mainShotInterval: 0.5
   subShotInterval: 2
+  timeStopShotInterval: 2
   subShotWayAngle: 20
   mainShot: 1
   subShot: 1
