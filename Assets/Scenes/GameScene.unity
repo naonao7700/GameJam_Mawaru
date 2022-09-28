@@ -817,7 +817,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 953125ac48cba3f4797a7d60f9208100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSE: {fileID: 8300000, guid: f8bba0248e687804a805f093c0f33685, type: 3}
+  startSE: {fileID: 0}
 --- !u!4 &697510552
 Transform:
   m_ObjectHideFlags: 0
@@ -2082,7 +2082,7 @@ MonoBehaviour:
   playerObject: {fileID: 0}
   enemyObject: {fileID: 0}
   bgmList:
-  - {fileID: 8300000, guid: b47a88356d9eec642999e4a8106a72dd, type: 3}
+  - {fileID: 0}
 --- !u!4 &1942187772
 Transform:
   m_ObjectHideFlags: 0
