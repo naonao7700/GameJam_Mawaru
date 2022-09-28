@@ -2748,7 +2748,7 @@ MonoBehaviour:
     gauge:
       gaugeMaxSE: {fileID: 8300000, guid: e31a52ef30aecb447835c0e1ba9a49c6, type: 3}
       prevValue: 0
-      threshold: 0
+      threshold: 0.09
       value: 0
       GAUGE_MAX: 70
     timeStop: {fileID: 963194229}
