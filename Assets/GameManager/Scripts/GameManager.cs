@@ -54,6 +54,9 @@ public class GameManager : MonoBehaviour
 	//下ボタンを押した
 	public static bool GetDownButtonDown() => Input.GetButtonDown("Vertical") && Input.GetAxis("Vertical") > 0.0f;
 
+	//時止めボタンを押した
+	public static bool GetTimeStopButtonDown() => Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
+
 	//ゲーム開始時の初期化処理
 	public static void OnGameStart() => instance.OnGameStartCore();
 
@@ -128,13 +131,15 @@ public class GameManager : MonoBehaviour
 		playerManager.DoUpdate(deltaTime);
 		timeManager.DoUpdate(deltaTime);
 
-		if( Input.GetKey(KeyCode.U))
-		{
-			AddTimeStopGauge(1);
-		}
-		if( Input.GetKeyDown(KeyCode.Y))
-		{
-			OnTimeStop();
+		//時止めが可能か判定
+		if (CanTimeStop())
+        {
+			//時止めボタンを押したとき
+			if (GetTimeStopButtonDown())
+			{
+				//時止め発動
+				OnTimeStop();
+			}
 		}
 	}
 
@@ -315,7 +320,9 @@ public class GaugeManager
 	//ゲージの割合を取得する
 	public float GetRate()
 	{
-		return (float)value / GAUGE_MAX;
+		var t = (float)value / GAUGE_MAX;
+		if (t > 1.0f) t = 1.0f;
+		return t;
 	}
 
 }
@@ -331,7 +338,7 @@ public class ScoreManager
 	public int highScore;
 
 	//スコアの最大値
-	public const int SCORE_MAX = 9999;
+	public const int SCORE_MAX = 99999999;
 
 	//スコアを加算する
 	public void AddScore( int value )

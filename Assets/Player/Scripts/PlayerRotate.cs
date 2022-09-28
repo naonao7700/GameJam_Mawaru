@@ -34,7 +34,6 @@ public class PlayerRotate : MonoBehaviour
     {
         //左右と上下の入力の合計が１以上なら、針をスティックの方向に向ける
         //１未満なら自動で時計回りに動かす
-        //Debug.Log(Input.GetAxis("R_Horizontal"));
 
         // 右スティック
         if (Mathf.Abs(Input.GetAxis("R_Horizontal")) + Mathf.Abs(Input.GetAxis("R_Vertical")) >= 1f)
@@ -67,11 +66,12 @@ public class PlayerRotate : MonoBehaviour
         // 針が前フレームよりも進んでいたらゲージ++
         if (playerObject.mainRot < oldMRot)
         {
-            GaugeNum += (oldMRot - playerObject.mainRot) * GaugeUpValue;
+            GaugeNum = (oldMRot - playerObject.mainRot) * GaugeUpValue;
             if (GaugeNum > 100)
                 GaugeNum = 100;
+            GameManager.AddTimeStopGauge(GaugeNum);
         }
-        GameManager.AddTimeStopGauge(GaugeNum * 0.01f );
+
         oldMRot = playerObject.mainRot;
     }
 }

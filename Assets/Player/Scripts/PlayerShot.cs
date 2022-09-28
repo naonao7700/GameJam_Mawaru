@@ -20,7 +20,10 @@ public class PlayerShot : MonoBehaviour
     float subShotInterval;
 
     [SerializeField]
-    float timeStopShotInterval;
+    float timeStopMainShotInterval;
+
+    [SerializeField]
+    float timeStopSubShotInterval;
 
     [SerializeField]
     float subShotWayAngle;
@@ -36,22 +39,34 @@ public class PlayerShot : MonoBehaviour
     {
         mainShotTimer += Time.deltaTime;
         subShotTimer += Time.deltaTime;
-
-        if (GameManager.IsTimeStop())
-        {
-            mainShotInterval /= timeStopShotInterval;
-            subShotInterval /= timeStopShotInterval;
-        }
+       
        
         if (mainShot)
         {
-            if (mainShotTimer < mainShotInterval)
-                return;
-            MainShot();
-            mainShotTimer = 0f;
+            if (GameManager.IsTimeStop())
+            {
+                if (mainShotTimer < timeStopMainShotInterval)
+                    return;
+                MainShot();
+                mainShotTimer = 0f;
+            }
+            else if (!GameManager.IsTimeStop())
+            {
+                if (mainShotTimer < mainShotInterval)
+                    return;
+                MainShot();
+                mainShotTimer = 0f;
+            }
         }
         if (subShot)
         {
+            if (GameManager.IsTimeStop())
+            {
+                if (subShotTimer < timeStopSubShotInterval)
+                    return;
+                SubShot();
+                subShotTimer = 0f;
+            }
             if (subShotTimer < subShotInterval)
                 return;
             SubShot();

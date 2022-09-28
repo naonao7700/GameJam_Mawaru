@@ -6,6 +6,10 @@ using UnityEngine.UI;
 //タイトルシーン
 public class TitleScene : MonoBehaviour, IScene
 {
+    //タイトルBGM
+    [SerializeField] private AudioClip bgm;
+
+    //スタート効果音
     [SerializeField] private AudioClip startSE;
 
     //タイトルシーンの初期化
@@ -13,6 +17,9 @@ public class TitleScene : MonoBehaviour, IScene
     {
         gameObject.SetActive(true);
 		GameManager.OnDeleteAllEnemy();
+
+        //BGMを再生する
+        GameManager.PlayBGM(bgm);
     }
 
     //タイトルシーンの更新

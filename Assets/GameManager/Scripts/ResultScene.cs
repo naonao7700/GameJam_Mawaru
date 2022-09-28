@@ -6,6 +6,13 @@ using UnityEngine.UI;
 //リザルトシーン
 public class ResultScene : MonoBehaviour, IScene
 {
+    //リザルトBGM
+    [SerializeField] private AudioClip bgm;
+
+    //効果音
+    [SerializeField] private AudioClip cursorSE;    //カーソル移動
+    [SerializeField] private AudioClip submitSE;    //決定音
+
     //カーソルの現在位置
     [SerializeField] private int cursorPos;
 
@@ -20,6 +27,9 @@ public class ResultScene : MonoBehaviour, IScene
 
         //カーソル位置を初期化する
         SetCursorPos(0);
+
+        //BGMを再生する
+        GameManager.PlayBGM(bgm);
     }
 
     //カーソル位置を設定する
@@ -56,12 +66,14 @@ public class ResultScene : MonoBehaviour, IScene
         //カーソル位置を更新する
         if( cursor != cursorPos )
         {
+            GameManager.PlaySE(cursorSE);
             SetCursorPos(cursor);
         }
 
         //ボタンを押したとき
         if ( GameManager.GetSubmitButtonDown() )
         {
+            GameManager.PlaySE(submitSE);
             //カーソル位置によって分岐する
             if( cursorPos == 0 )
             {

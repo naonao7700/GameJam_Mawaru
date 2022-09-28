@@ -73,7 +73,7 @@ public class GameScene : MonoBehaviour, IScene
 		time.text = "経過時間：" + GameManager.GetTimeText();
 
 		//スコアを更新
-		score.text = "Score:" + GameManager.GetScore().ToString("D4");
+		score.text = "Score:" + GameManager.GetScore().ToString("D8");
 
         //ゲージの更新
         gauge.Change(GameManager.GetGaugeRate());

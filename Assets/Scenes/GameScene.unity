@@ -355,6 +355,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1137cbbdf5240245b5ad14af8e9cfce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgm: {fileID: 8300000, guid: 93f801a47dd86a44393cb328c3d69173, type: 3}
+  cursorSE: {fileID: 0}
+  submitSE: {fileID: 8300000, guid: 915a715284af8c842a359326d473d8a8, type: 3}
   cursorPos: 0
   cursorImage:
   - {fileID: 2097761145}
@@ -817,7 +820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 953125ac48cba3f4797a7d60f9208100, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSE: {fileID: 0}
+  bgm: {fileID: 8300000, guid: 0084b1bd96934d4498e887bd43c2d680, type: 3}
+  startSE: {fileID: 8300000, guid: 915a715284af8c842a359326d473d8a8, type: 3}
 --- !u!4 &697510552
 Transform:
   m_ObjectHideFlags: 0
