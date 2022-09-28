@@ -356,7 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgm: {fileID: 8300000, guid: 93f801a47dd86a44393cb328c3d69173, type: 3}
-  cursorSE: {fileID: 0}
+  cursorSE: {fileID: 8300000, guid: 8fa03a00a81f39045b37dd8acde4258a, type: 3}
   submitSE: {fileID: 8300000, guid: 915a715284af8c842a359326d473d8a8, type: 3}
   cursorPos: 0
   cursorImage:
