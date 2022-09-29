@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class spawnmove : MonoBehaviour
 {
-    private float R = 15; //ƒvƒŒƒCƒ„[‚ð‰~‚Ì’†S‚Æ‚µ‚½Žž‚Ì”¼Œa
+    public float R = 15; //ƒvƒŒƒCƒ„[‚ð‰~‚Ì’†S‚Æ‚µ‚½Žž‚Ì”¼Œa
     private float Angle; // Šp“x
     public float addAngle; // ‰~‰^“®‚Ì‘¬“x
     public float centerX;
     public float centerY;
     private float posX;
     private float posY;
-    private int count;
+    [SerializeField] private int count;
+    [SerializeField] private float _count2;
     // Start is called before the first frame update
     void Start()
     {
+        _count2 = 0.0f;
         count = 0;
         Angle = 0;
         //center = GameObject.FindGameObjectWithTag("Player");
@@ -23,7 +25,15 @@ public class spawnmove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(count >= 1800)
+        _count2 += Time.deltaTime;
+
+        if( _count2 > 1.0f )
+        {
+            _count2 = 0.0f;
+            count++;
+        }
+
+        if(count >= 3)
         {
             Destroy(gameObject);
         }
@@ -34,6 +44,6 @@ public class spawnmove : MonoBehaviour
         //Vector3 pos = new Vector3(center.transform.position.x + addX, center.transform.position.y + addY,0 );
         gameObject.transform.position = new Vector3( centerX +addX, centerY+addY, 0 );
         Angle += addAngle;
-        count++;
+        //count++;
     }
 }

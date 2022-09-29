@@ -5,10 +5,10 @@ using UnityEngine;
 public class HitBullet : MonoBehaviour
 {
     public GameObject DethEfect;
-    public GameObject StopEfect;
     public GameObject StopDethEfect;
-    public AudioClip deathSE;
     bool Dethflag;
+    bool StopDethflag;
+    public AudioClip deathSE;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,17 +23,27 @@ public class HitBullet : MonoBehaviour
             //Instantiate(StopEfect,transform.position, transform.rotation);
             if(GameManager.TimeRate >= 0.9f)
             {
-                GameManager.PlaySE(deathSE);
-                Destroy(gameObject);
-                Instantiate(StopDethEfect, transform.position, transform.rotation);
-                GameManager.AddScore(100);
+                if(StopDethflag == true)
+                {
+                    GameManager.PlaySE(deathSE);
+                    Destroy(gameObject);
+                    Instantiate(StopDethEfect, transform.position, transform.rotation);
+                    GameManager.AddScore(100);
+                }
+                if(StopDethflag == false)
+                {
+                    GameManager.PlaySE(deathSE);
+                    Destroy(gameObject);
+                    Instantiate(DethEfect, transform.position, transform.rotation);
+                    GameManager.AddScore(100);
+                }
             }else if(GameManager.TimeRate == 0.0f)
             {
                 foreach(Transform child in transform)
                 {
                     child.gameObject.SetActive(true);
                 }
-                   
+                StopDethflag = true;
 
                 //Instantiate(StopEfect, transform.position, transform.rotation);
                 //GameManager.AddScore(100);

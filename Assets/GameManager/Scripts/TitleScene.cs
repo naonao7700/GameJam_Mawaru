@@ -30,9 +30,29 @@ public class TitleScene : MonoBehaviour, IScene
 
 	public bool startFlag;
 
-    //タイトルシーンの初期化
-    public void OnEnter()
+	//チュートリアルフラグ
+	public bool tutoFlag;
+
+	[SerializeField] private Image tutoImage;
+	public Timer tutoTimer;
+
+	public bool tutoEndFlag;//チュートリアル終了フラグ
+
+	[SerializeField] private RectTransform spine;   //立ち絵
+	public Vector3 spineHidePos;
+	public Vector3 spineViewPos;
+
+
+	//タイトルシーンの初期化
+	public void OnEnter()
     {
+		GameManager.OnDeleteAllEnemy();//敵を全て消す
+
+		spine.anchoredPosition = spineHidePos;
+
+		tutoFlag = false;
+		tutoEndFlag = false;
+
 		chara.gameObject.SetActive(true);
 
 		startFlag = false;
@@ -49,6 +69,50 @@ public class TitleScene : MonoBehaviour, IScene
     //タイトルシーンの更新
     public void DoUpdate()
     {
+		//チュートリアル終了処理
+		if( tutoEndFlag )
+        {
+			tutoTimer.DoUpdate(Time.deltaTime);
+			var t2 = tutoTimer.GetRate();
+			t2 = 1.0f - t2;
+
+			var tutoColor = tutoImage.color;
+			tutoColor.a = Mathf.Lerp(0.0f, 1.0f, t2);
+			tutoImage.color = tutoColor;
+
+			spine.anchoredPosition = Vector3.Lerp(spineHidePos, spineViewPos, t2 * t2 );
+
+			if ( tutoTimer.IsEnd() )
+            {
+				//ゲームシーンに遷移する
+				GameManager.OnChangeScene(SceneID.Game);
+			}
+			return;
+        }
+
+		//チュートリアル表示処理
+		if( tutoFlag )
+        {
+			tutoTimer.DoUpdate(Time.deltaTime);
+			var t2 = tutoTimer.GetRate();
+
+			var tutoColor = tutoImage.color;
+			tutoColor.a = Mathf.Lerp(0.0f, 1.0f, t2);
+			tutoImage.color = tutoColor;
+			
+			if( tutoTimer.IsEnd() )
+            {
+				if (GameManager.GetSubmitButtonDown())
+				{
+					tutoTimer.Reset();
+					GameManager.PlaySE(startSE);
+					tutoEndFlag = true;
+				}
+			}
+			return;
+		}
+
+
 		startTimer.DoUpdate(Time.deltaTime);
 		var t = startTimer.GetRate();
 		t = t * t * (3.0f - 2.0f * t);
@@ -66,8 +130,9 @@ public class TitleScene : MonoBehaviour, IScene
 
 			if ( startTimer.IsEnd() )
 			{
-				//ゲームシーンに遷移する
-				GameManager.OnChangeScene(SceneID.Game);
+				tutoFlag = true;
+				tutoTimer.Reset();
+
 			}
 			return;
 		}
@@ -77,6 +142,8 @@ public class TitleScene : MonoBehaviour, IScene
 		logo.color = color;
 
 		button.anchoredPosition = Vector3.Lerp(buttonHidePos, buttonViewPos, t);
+
+		spine.anchoredPosition = Vector3.Lerp(spineHidePos, spineViewPos, t);
 
 
 		if (!startTimer.IsEnd()) return;

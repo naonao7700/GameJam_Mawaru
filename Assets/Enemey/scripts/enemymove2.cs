@@ -51,14 +51,15 @@ public class enemymove2 : MonoBehaviour
             //    speed2 = 0;
         }
 
+        float addX = Mathf.Cos(Angle) * R;
+        float addY = Mathf.Sin(Angle) * R;
+        var add = new Vector3(addX, addY) * Time.deltaTime * GameManager.TimeRate;
+        //Vector3 pos = new Vector3(center.transform.position.x + addX, center.transform.position.y + addY,0 );
+        gameObject.transform.position = new Vector3(centerX, centerY, 0) + add;
+        Angle -= addAngle;
+        R -= 0.01f;
         if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
         {
-            float addX = Mathf.Cos(Angle) * R;
-            float addY = Mathf.Sin(Angle) * R;
-            //Vector3 pos = new Vector3(center.transform.position.x + addX, center.transform.position.y + addY,0 );
-            gameObject.transform.position = new Vector3(centerX + addX, centerY + addY, 0);
-            Angle -= addAngle;
-            R -= 0.01f;
         }
     }
 

@@ -41,10 +41,10 @@ public class enemymove : MonoBehaviour
             //    speed2 = 0;
         }
 
-        if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
-        {
-            transform.Translate(Vector3.up/*dir.normalized*/ * speed * Time.deltaTime);
-        }
+        transform.Translate(Vector3.up/*dir.normalized*/ * speed * Time.deltaTime * GameManager.TimeRate );
+        //if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
+        //{
+        //}
     }
 
     //‰~“¯Žm‚Ì“–‚½‚è”»’è

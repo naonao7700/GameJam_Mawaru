@@ -5,64 +5,85 @@ using UnityEngine;
 public class EnemyManeger : MonoBehaviour
 {
     public GameObject[] Enemyspawn;
-    int count;
+
+    [SerializeField] float _count2;
+    [SerializeField] int count;
     // Start is called before the first frame update
     void Start()
     {
+        _count2 = 0.0f;
         count = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(count == 1800)
+        if( count == 0 )
         {
             Spawn(1);
+            count++;
         }
-        if (count == 3600)
+        if(count == 3)
+        {
+            Spawn(1);
+            count++;
+        }
+        if (count == 6)
         {
             Spawn(2);
+            count++;
         }
-        if (count == 5400)
+        if (count == 9)
         {
             Spawn(3);
+            count++;
         }
-        if (count == 7200)
+        if (count == 12)
         {
             Spawn(4);
-           
-        }
-        if (count == 9000)
-        {
-            Spawn(5);
-          
-        }
-        if (count== 10800)
-        {
-            Spawn(6);
-           
-        }
-        if (count == 12600)
-        {
-            Spawn(7);
-           
-        }
-        if (count == 14400)
-        {
-            Spawn(8);
-          
-        }
-        if (count == 16200)
-        {
-            Spawn(0);
+            count++;
 
         }
-        if(count == 18000)
+        if (count == 15)
+        {
+            Spawn(5);
+            count++;
+        }
+        if (count== 18)
+        {
+            Spawn(6);
+            count++;
+
+        }
+        if (count == 21)
+        {
+            Spawn(7);
+            count++;
+
+        }
+        if (count == 24)
+        {
+            Spawn(8);
+            count++;
+
+        }
+        if (count == 27)
+        {
+            Spawn(0);
+            count++;
+
+        }
+        if (count == 30)
         {
             count = 0;
         }
 
-        count++;
+        _count2 += Time.deltaTime;
+        if( _count2 > 1.0f )
+        {
+            _count2 = 0.0f;
+            count++;
+        }
     }
     void Spawn(int i)
     {

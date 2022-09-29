@@ -64,13 +64,13 @@ public class GameManager : MonoBehaviour
 	public static float TimeRate => 1.0f - instance.playerManager.timeStop.range;
 
 	//決定ボタンを押した
-	public static bool GetSubmitButtonDown() => GetTimeStopButtonDown();
+	public static bool GetSubmitButtonDown() => GetTimeStopButtonDown() || Input.GetButtonDown("Fire1");
 
 	//上ボタンを押した
-	public static bool GetUpButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") < 0.0f) || ( Input.GetAxis("L_Horizontal") < 0.0f );
+	public static bool GetUpButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") < -0.3f) || ( Input.GetAxis("L_Horizontal") < -0.3f );
 
 	//下ボタンを押した
-	public static bool GetDownButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") > 0.0f) || (Input.GetAxis("L_Horizontal") > 0.0f);
+	public static bool GetDownButtonDown() => (Input.GetButtonDown("Horizontal") && Input.GetAxis("Horizontal") > 0.3f) || (Input.GetAxis("L_Horizontal") > 0.3f);
 
 	//時止めボタンを押した
 	public static bool GetTimeStopButtonDown() => Input.GetKeyDown(KeyCode.Joystick1Button4) || Input.GetKeyDown(KeyCode.Joystick1Button5) || Input.GetKeyDown(KeyCode.Space);
@@ -137,6 +137,11 @@ public class GameManager : MonoBehaviour
 	//敵キャラを全て消す
 	private void OnDeleteAllEnemyCore()
 	{
+		foreach( var spown in GameObject.FindObjectsOfType<spawn>() )
+        {
+			GameObject.Destroy(spown.gameObject);
+        }
+
 		//生存している敵キャラを全て消す
 		foreach (var enemy in GameObject.FindGameObjectsWithTag("Enemy"))
 		{
@@ -491,14 +496,12 @@ public class ScoreManager
 [System.Serializable]
 public class CutInManager
 {
-	[SerializeField] private UnityEngine.UI.Image image;
-	[SerializeField] private Vector3 startPos;
-	[SerializeField] private Vector3 endPos;
-
-	[SerializeField] private Vector3 startScale;
-	[SerializeField] private Vector3 endScale;
+	[SerializeField] private UnityEngine.UI.Image back;
+	[SerializeField] private UnityEngine.UI.Image chara;
 
 	[SerializeField] private float[] times;
+	public Vector3[] charaPos;
+	public Vector3[] backPos;
 
 	public Timer timer;
 	public int step;
@@ -507,18 +510,21 @@ public class CutInManager
 	public void Reset()
 	{
 		activeFlag = false;
-		image.gameObject.SetActive(false);
+		chara.gameObject.SetActive(false);
+		back.gameObject.SetActive(false);
 	}
 
 	//カットイン演出開始
 	public void OnStart()
 	{
-		step = 0;
+		step = 1;
 		timer.Reset( times[0], 0.0f );
-		image.gameObject.SetActive(true);
-		image.transform.position = startPos;
-		image.transform.localScale = startScale;
-		image.color = Color.white;
+
+		chara.gameObject.SetActive(true);
+		back.gameObject.SetActive(true);
+		chara.rectTransform.anchoredPosition = charaPos[step-1];
+		back.rectTransform.anchoredPosition = backPos[step-1];
+
 		activeFlag = true;
 	}
 
@@ -534,33 +540,37 @@ public class CutInManager
 			step++;
 			if( step >= times.Length )
 			{
-				image.gameObject.SetActive(false);
+				chara.gameObject.SetActive(false);
+				back.gameObject.SetActive(false);
 				activeFlag = false;
 			}
 		}
-		switch( step )
-		{
-			case 0:
-				{
-					//スライドイン
-					image.rectTransform.anchoredPosition = Vector3.Lerp(startPos, endPos, t);
-					break;
-				}
-			case 1:
-				{
-					//待機
-					break;
-				}
-			case 2:
-				{
-					//拡大&透明化
-					image.transform.localScale = Vector3.Lerp(startScale, endScale, t);
-					var color = image.color;
-					color.a = Mathf.Lerp(1.0f, 0.0f, t);
-					image.color = color;
-					break;
-				}
-		}
+		chara.rectTransform.anchoredPosition = Vector3.Lerp(charaPos[step - 1], charaPos[step], t);
+		back.rectTransform.anchoredPosition = Vector3.Lerp(backPos[step - 1], backPos[step], t);
+
+		//switch( step )
+		//{
+		//	case 0:
+		//		{
+		//			//スライドイン
+		//			image.rectTransform.anchoredPosition = Vector3.Lerp(startPos, endPos, t);
+		//			break;
+		//		}
+		//	case 1:
+		//		{
+		//			//待機
+		//			break;
+		//		}
+		//	case 2:
+		//		{
+		//			//拡大&透明化
+		//			image.transform.localScale = Vector3.Lerp(startScale, endScale, t);
+		//			var color = image.color;
+		//			color.a = Mathf.Lerp(1.0f, 0.0f, t);
+		//			image.color = color;
+		//			break;
+		//		}
+		//}
 	}
 
 }

@@ -27,7 +27,9 @@ public class spawn : MonoBehaviour
     //ê∂ê¨
     void Spawn()
     {
-        Instantiate(enemyPrefab, transform.position, transform.rotation);
+        var dir = transform.position.normalized;
+        var pos = dir *= 24.0f;
+        Instantiate(enemyPrefab, pos, transform.rotation);
 
     }
 }

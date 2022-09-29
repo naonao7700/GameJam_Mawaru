@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c26b551fdea2cd43b244ac912dc417d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 2
 --- !u!58 &-8542578200340944294
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -149,9 +149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6045955665e55ba47b845071690e65d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DethEfect: {fileID: 0}
-  StopEfect: {fileID: 0}
-  StopDethEfect: {fileID: 100018, guid: a40b64bf23366dc42a892af2c6ff6140, type: 3}
+  DethEfect: {fileID: 100018, guid: a40b64bf23366dc42a892af2c6ff6140, type: 3}
+  StopDethEfect: {fileID: 1247311384876784, guid: 4adffb0018aeda44e9263f901167af1f, type: 3}
   deathSE: {fileID: 8300000, guid: b79054d2151d96d42aafa8478c932816, type: 3}
 --- !u!1 &7747322318331658461
 GameObject:

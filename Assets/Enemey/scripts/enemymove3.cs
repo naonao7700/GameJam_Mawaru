@@ -44,10 +44,10 @@ public class enemymove3 : MonoBehaviour
             //    speed2 = 0;
         }
 
-        if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
-        {
-            transform.Translate(Movedir * speed * Time.deltaTime);
-        }
+        transform.Translate(Movedir * speed * Time.deltaTime * GameManager.TimeRate);
+        //if (HitCheck(0, 0, this.transform.position.x, transform.position.y, circle.transform.localScale.x / 2, 0.8f) == false)
+        //{
+        //}
         count++;
     }
     //‰~“¯Žm‚Ì“–‚½‚è”»’è
