@@ -46,9 +46,20 @@ public class PlayerRotate2 : MonoBehaviour
 		{
 			float angle = Vector2.SignedAngle(dir, v);
 			Debug.Log(angle);
+
+			if( Mathf.Abs( angle ) > 5 )
+            {
+				if (angle < 0) angle = -5;
+				else angle = 5;
+				
+            }
 			//mainValue += angle;
 
-			mainValue = Mathf.LerpAngle(mainValue * Mathf.Deg2Rad, angle, 0.1f);
+			mainValue = Mathf.Lerp(mainValue, mainValue % 360, 0.1f) + (mainValue % 360);
+			if( angle < 0  )
+            {
+				GameManager.AddTimeStopGauge(angle);
+            }
 		}
 
 		//Šp“x‚ð•ÏX‚·‚é

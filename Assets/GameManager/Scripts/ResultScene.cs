@@ -33,10 +33,16 @@ public class ResultScene : MonoBehaviour, IScene
 	[SerializeField] private Vector3 buttonHidePos;
 	[SerializeField] private Vector3 buttonViewPos;
 
+    //遷移フラグ
+    public bool endFlag;
+    public Timer endTimer;
+    [SerializeField] private FadeImage fade;
 
     //リザルトシーンの初期化
     public void OnEnter()
     {
+        endFlag = false;
+
 		startTimer.Reset();
 
         //ハイスコアを更新する
@@ -81,6 +87,43 @@ public class ResultScene : MonoBehaviour, IScene
     //リザルトシーンの更新
     public void DoUpdate()
     {
+        if( endFlag )
+        {
+            endTimer.DoUpdate(Time.deltaTime);
+            var t = curve.Evaluate( endTimer.GetRate());
+            t = 1.0f - t;
+            var color = backImage.color;
+            color.a = Mathf.Lerp(0.0f, 0.35f, t);
+            backImage.color = color;
+
+            color = scoreText.color;
+            color.a = Mathf.Lerp(0.0f, 1.0f, t);
+            scoreText.color = color;
+            highScoreText.color = color;
+
+            buttons.anchoredPosition = Vector3.Lerp(buttonHidePos, buttonViewPos, t);
+
+            if ( endTimer.IsEnd() )
+            {
+                fade.SetFade(false);
+
+                GameManager.OnDeleteAllEnemy();
+
+                //カーソル位置によって分岐する
+                if (cursorPos == 0)
+                {
+                    //ゲームシーンへ遷移する
+                    GameManager.OnChangeScene(SceneID.Game);
+                }
+                else
+                {
+                    //タイトルシーンへ遷移する
+                    GameManager.OnChangeScene(SceneID.Title);
+                }
+            }
+            return;
+        }
+
 		if( !startTimer.IsEnd() )
 		{
 			startTimer.DoUpdate(Time.deltaTime);
@@ -127,17 +170,10 @@ public class ResultScene : MonoBehaviour, IScene
         if ( GameManager.GetSubmitButtonDown() )
         {
             GameManager.PlaySE(submitSE);
-            //カーソル位置によって分岐する
-            if( cursorPos == 0 )
-            {
-                //ゲームシーンへ遷移する
-                GameManager.OnChangeScene(SceneID.Game);
-            }
-            else
-            {
-                //タイトルシーンへ遷移する
-                GameManager.OnChangeScene(SceneID.Title);
-            }
+            endFlag = true;
+            endTimer.Reset();
+            fade.SetFade(true);
+
         }
     }
 
