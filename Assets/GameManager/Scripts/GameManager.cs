@@ -480,7 +480,10 @@ public class ScoreManager
 	//スコアを加算する
 	public void AddScore( int value )
 	{
-		SetScore(score + value);
+		if( !GameManager.IsPlayerDeath() )
+        {
+			SetScore(score + value);
+		}
 	}
 
 	//スコアの数値を設定する
